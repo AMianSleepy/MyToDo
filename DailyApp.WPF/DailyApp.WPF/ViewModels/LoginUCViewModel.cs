@@ -1,4 +1,5 @@
 ﻿using Prism.Commands;
+using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace DailyApp.WPF.ViewModels
     /// <summary>
     /// 登录视图模型
     /// </summary>
-    class LoginUCViewModel : IDialogAware// 实现对话框服务的接口
+    class LoginUCViewModel : BindableBase,IDialogAware// 实现对话框服务的接口
     {
         public string Title { get; set; } = "我的日常";
 
@@ -28,7 +29,13 @@ namespace DailyApp.WPF.ViewModels
         /// </summary>
         public LoginUCViewModel()
         {
+            // 登录命令
             LoginCmm = new DelegateCommand(Login);
+
+            // 显示注册内容命令
+            ShowRegInfoCmm = new DelegateCommand(ShowRegInfo);
+            // 显示登录内容命令
+            ShowLoginInfoCmm = new DelegateCommand(ShowLoginInfo);
         }
 
         /// <summary>
@@ -58,5 +65,39 @@ namespace DailyApp.WPF.ViewModels
         {
             
         }
+
+        #region 显示内容的索引
+        /// <summary>
+        /// 显示内容的索引
+        /// </summary>
+        private int _SelectedIndex;
+        public int SelectedIndex
+        {
+            get { return _SelectedIndex; }
+            set 
+            { 
+                _SelectedIndex = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// 显示注册信息
+        /// </summary>
+        public DelegateCommand ShowRegInfoCmm { get; set; }
+        private void ShowRegInfo()
+        {
+            SelectedIndex = 1;
+        }
+
+        /// <summary>
+        /// 显示登录信息
+        /// </summary>
+        public DelegateCommand ShowLoginInfoCmm { get; set; }
+        private void ShowLoginInfo()
+        {
+            SelectedIndex = 0;
+        }
+        #endregion
     }
 }
