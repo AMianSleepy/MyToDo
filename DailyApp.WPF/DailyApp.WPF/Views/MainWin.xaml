@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:DailyApp.WPF.Views"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="MainWin" Height="700" Width="1200">
     <Grid>
