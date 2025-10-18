@@ -43,6 +43,8 @@ namespace DailyApp.WPF.ViewModels
         /// </summary>
         private void Login()
         {
+            // 此处测试传入的Password
+            string testInput = Pwd;
             // 模拟登录成功
             RequestClose?.Invoke(new DialogResult(ButtonResult.OK));
         }
@@ -71,6 +73,9 @@ namespace DailyApp.WPF.ViewModels
         /// 显示内容的索引
         /// </summary>
         private int _SelectedIndex;
+        /// <summary>
+        /// 显示内容的索引
+        /// </summary>
         public int SelectedIndex
         {
             get { return _SelectedIndex; }
@@ -85,6 +90,9 @@ namespace DailyApp.WPF.ViewModels
         /// 显示注册信息
         /// </summary>
         public DelegateCommand ShowRegInfoCmm { get; set; }
+        /// <summary>
+        /// 显示注册信息
+        /// </summary>
         private void ShowRegInfo()
         {
             SelectedIndex = 1;
@@ -94,9 +102,27 @@ namespace DailyApp.WPF.ViewModels
         /// 显示登录信息
         /// </summary>
         public DelegateCommand ShowLoginInfoCmm { get; set; }
+        /// <summary>
+        /// 显示登录信息
+        /// </summary>
         private void ShowLoginInfo()
         {
             SelectedIndex = 0;
+        }
+        #endregion
+
+        #region 密码
+        /// <summary>
+        /// 密码
+        /// </summary>
+        private string _Pwd;
+        /// <summary>
+        /// 密码
+        /// </summary>
+        public string Pwd
+        {
+            get { return _Pwd; }
+            set { _Pwd = value; }
         }
         #endregion
     }
