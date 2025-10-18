@@ -4,11 +4,45 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DailyApp.WPF.Views"
-             mc:Ignorable="d" 
-             Height="450" Width="800">
-    <Grid>
-        <TextBlock Text="这是登录界面" FontSize="30"></TextBlock>
-        <Button Content="登录" Width="100" Height="50" FontSize="30" Command="{Binding LoginCmm}"/>
+             mc:Ignorable="d"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             Height="400" Width="800">
+    <!--第三方素材库-->
+    <Grid Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.5*"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Image Margin="0,0,0,0" Source="/Images/login.png" Stretch="Fill"/>
+        
+        <!--<TextBlock Text="这是登录界面" FontSize="30"></TextBlock>
+        <Button Content="登录" Width="100" Height="50" FontSize="30" Command="{Binding LoginCmm}"/>-->
 
+        <md:Transitioner Grid.Column="1" SelectedIndex="0">
+            <!--第一块 登录-->
+            <md:TransitionerSlide>
+                <DockPanel Margin="15" VerticalAlignment="Center">
+                    <TextBlock Text="欢迎使用" FontWeight="Bold" FontSize="22" DockPanel.Dock="Top" Margin="0,15" HorizontalAlignment="Center"></TextBlock>
+                    <TextBox md:HintAssist.Hint="请输入账号" DockPanel.Dock="Top" Margin="0,15"></TextBox>
+                    <PasswordBox md:HintAssist.Hint="请输入密码" DockPanel.Dock="Top"  Margin="0,15"></PasswordBox>
+                    <Button Content="登录" DockPanel.Dock="Top" Margin="0,15"></Button>
+
+                    <DockPanel Margin="0.5" LastChildFill="False">
+                        <TextBlock Text="注册账号">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonDown">
+                                    <i:InvokeCommandAction></i:InvokeCommandAction>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBlock>
+
+                        <TextBlock Text="忘记密码" DockPanel.Dock="Right"></TextBlock>
+                    </DockPanel>
+                </DockPanel>
+            </md:TransitionerSlide>
+            <!--第二块 注册-->
+            
+        </md:Transitioner>
     </Grid>
 </UserControl>
