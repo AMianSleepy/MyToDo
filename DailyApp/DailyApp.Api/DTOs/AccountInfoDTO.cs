@@ -1,18 +1,17 @@
-﻿// Data Transger Object 数据传输对象
-namespace DailyApp.API.DTOs
+﻿namespace DailyApp.Api.DTOs
 {
     /// <summary>
-    /// 账号DTO（用来接收数据信息）
+    /// 账号DTO（用来接收注册的信息）
     /// </summary>
     public class AccountInfoDTO
     {
         /// <summary>
-        /// 用户名称
+        /// 名称
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// 账户
+        /// 账号
         /// </summary>
         public string Account { get; set; }
 
