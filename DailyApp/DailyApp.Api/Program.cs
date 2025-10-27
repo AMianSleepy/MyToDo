@@ -24,6 +24,9 @@ namespace DailyApp.Api
             // 注入数据库上下文
             builder.Services.AddDbContext<DaliyDbContext>(m => m.UseSqlServer(builder.Configuration.GetConnectionString("ConnStr")));
 
+            // AutoMapper
+            builder.Services.AddAutoMapper(typeof(AutoMapperSettingscs));
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

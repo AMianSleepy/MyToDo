@@ -1,4 +1,5 @@
-﻿using DailyApp.Api.ApiReponses;
+﻿using AutoMapper;
+using DailyApp.Api.ApiReponses;
 using DailyApp.Api.DataModel;
 using DailyApp.Api.DTOs;
 using Microsoft.AspNetCore.Http;
@@ -19,12 +20,18 @@ namespace DailyApp.Api.Controllers
         private readonly DaliyDbContext db;
 
         /// <summary>
+        /// AutoMapper
+        /// </summary>
+        private readonly IMapper mapper;
+
+        /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="_db"></param>
-        public AccountController(DaliyDbContext _db)
+        public AccountController(DaliyDbContext _db, IMapper _mapper)
         {
             db = _db;
+            mapper = _mapper;
         }
 
         /// <summary>
@@ -50,7 +57,9 @@ namespace DailyApp.Api.Controllers
                 }
 
                 // 2、如果不存在则添加账号
-                AccountInfo accountInfo = new AccountInfo { Account = accountInfoDTO.Account, Name = accountInfoDTO.Name, Pwd = accountInfoDTO.Pwd };
+                // DTO -> AccountInfo
+                AccountInfo accountInfo = mapper.Map<AccountInfo>(accountInfoDTO);
+
                 db.AccountInfo.Add(accountInfo);
                 int result = db.SaveChanges();// 保存 受影响的行数
                 if (result == 1)
