@@ -1,4 +1,6 @@
-﻿using Prism.Commands;
+﻿using DailyApp.WPF.DTOs;
+using DailyApp.WPF.HttpClients;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
@@ -7,6 +9,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DailyApp.WPF.ViewModels
 {
@@ -19,6 +22,8 @@ namespace DailyApp.WPF.ViewModels
 
         public event Action<IDialogResult> RequestClose;
 
+        private readonly HttpRestClient HttpRestClient;
+
         /// <summary>
         /// 登录命令
         /// </summary>
@@ -27,7 +32,7 @@ namespace DailyApp.WPF.ViewModels
         /// <summary>
         /// 构造函数
         /// </summary>
-        public LoginUCViewModel()
+        public LoginUCViewModel(HttpRestClient _HttpRestClient)
         {
             // 登录命令
             LoginCmm = new DelegateCommand(Login);
@@ -38,6 +43,10 @@ namespace DailyApp.WPF.ViewModels
             ShowLoginInfoCmm = new DelegateCommand(ShowLoginInfo);
             // 注册命令
             RegCmm = new DelegateCommand(Reg);
+            // 实例化注册信息
+            AccountInfoDTO = new AccountInfoDTO();
+            // 请求client
+            HttpRestClient = _HttpRestClient;
         }
 
         /// <summary>
@@ -57,7 +66,55 @@ namespace DailyApp.WPF.ViewModels
 
         private void Reg()
         {
+            if (string.IsNullOrEmpty(AccountInfoDTO.Name) || string.IsNullOrEmpty(AccountInfoDTO.Account) || string.IsNullOrEmpty(AccountInfoDTO.Pwd) || string.IsNullOrEmpty(AccountInfoDTO.ConfirmPwd))
+            {
+                MessageBox.Show("注册信息不全！", "警告！");
+                return;
+            }
+            else if (AccountInfoDTO.Pwd != AccountInfoDTO.ConfirmPwd)
+            {
+                MessageBox.Show("两次输入密码不一致！", "警告！");
+                return;
+            }
+            else if (AccountInfoDTO.Pwd.Length < 4)
+            {
+                MessageBox.Show("密码长度小于4！", "警告！");
+                return;
+            }
 
+            // 调用Api
+            ApiRequest apiRequest = new ApiRequest();
+            apiRequest.Method = RestSharp.Method.POST;
+            apiRequest.Route = "Account/Reg";
+            apiRequest.Parameters = AccountInfoDTO;
+
+            ApiResponse response = HttpRestClient.Execute(apiRequest);// 请求Api
+            if (response.ResultCode == 1)
+            {
+                MessageBox.Show(response.Msg);
+                SelectedIndex = 0;// 切换到登陆
+            }
+            else
+            {
+                MessageBox.Show(response.Msg);
+            }
+        }
+
+        /// <summary>
+        /// 注册信息
+        /// </summary>
+        private AccountInfoDTO _AccountInfoDTO;
+        /// <summary>
+        /// 注册信息
+        /// </summary>
+        public AccountInfoDTO AccountInfoDTO
+        {
+            get { return _AccountInfoDTO; }
+            set
+            {
+                _AccountInfoDTO = value;
+                RaisePropertyChanged();
+            }
         }
         #endregion
 
@@ -137,5 +194,8 @@ namespace DailyApp.WPF.ViewModels
             set { _Pwd = value; }
         }
         #endregion
+
+
+
     }
 }

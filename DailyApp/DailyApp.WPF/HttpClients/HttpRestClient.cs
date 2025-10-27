@@ -16,7 +16,7 @@ namespace DailyApp.WPF.HttpClients
         // 客户端
         private readonly RestClient Client;
 
-        // 请求地址（公共部分）
+        /// 请求地址（公共部分）
         private readonly string baseUrl = "http://localhost:10036/api/";
 
         public HttpRestClient()
@@ -29,7 +29,7 @@ namespace DailyApp.WPF.HttpClients
         /// </summary>
         /// <param name="apiRequest">请求数据</param>
         /// <returns>接收数据</returns>
-        public ApiResponse Exexute(ApiRequest apiRequest)
+        public ApiResponse Execute(ApiRequest apiRequest)
         {
             RestRequest request = new RestRequest(apiRequest.Method);// 请求方式
             request.AddHeader("Content-type", apiRequest.ContentType);// 内容类型
@@ -47,7 +47,7 @@ namespace DailyApp.WPF.HttpClients
             }
             else
             {
-                return new ApiResponse { ResultCode = -99, Msg = "错误！" };
+                return new ApiResponse { ResultCode = -99, Msg = $"请求失败，状态码：{res.StatusCode}" };
             }
         }
     }
