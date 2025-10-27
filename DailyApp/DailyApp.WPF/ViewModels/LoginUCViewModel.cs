@@ -36,6 +36,8 @@ namespace DailyApp.WPF.ViewModels
             ShowRegInfoCmm = new DelegateCommand(ShowRegInfo);
             // 显示登录内容命令
             ShowLoginInfoCmm = new DelegateCommand(ShowLoginInfo);
+            // 注册命令
+            RegCmm = new DelegateCommand(Reg);
         }
 
         /// <summary>
@@ -48,6 +50,16 @@ namespace DailyApp.WPF.ViewModels
             // 模拟登录成功
             RequestClose?.Invoke(new DialogResult(ButtonResult.OK));
         }
+
+        #region 注册
+        // 注册命令
+        public DelegateCommand RegCmm { get; set; }
+
+        private void Reg()
+        {
+
+        }
+        #endregion
 
         /// <summary>
         /// 是否能够关闭对话框
