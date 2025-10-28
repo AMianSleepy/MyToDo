@@ -86,6 +86,10 @@ namespace DailyApp.WPF.ViewModels
             ApiRequest apiRequest = new ApiRequest();
             apiRequest.Method = RestSharp.Method.POST;
             apiRequest.Route = "Account/Reg";
+
+            // 密码处理
+            AccountInfoDTO.Pwd = Md5Helper.GetMd5(AccountInfoDTO.Pwd);
+
             apiRequest.Parameters = AccountInfoDTO;
 
             ApiResponse response = HttpRestClient.Execute(apiRequest);// 请求Api
