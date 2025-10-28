@@ -80,5 +80,39 @@ namespace DailyApp.Api.Controllers
             }
             return Ok(res);
         }
+
+        /// <summary>
+        /// 登录Api
+        /// </summary>
+        /// <param name="account">账号</param>
+        /// <param name="pwd">密码（MD5值）</param>
+        /// <returns>登录信息 -1：账号或密码错误；1：登录成功；-99：未知错误</returns>
+        [HttpGet]
+        public IActionResult Login(string account, string pwd)
+        {
+            ApiReponse res = new ApiReponse();
+
+            try
+            {
+                var dnAccountInfo = db.AccountInfo.Where(t => t.Account == account && t.Pwd == pwd).FirstOrDefault();
+
+                if (dnAccountInfo == null)
+                {
+                    res.ResultCode = -1;
+                    res.Msg = "账号或密码错误！";
+                    return Ok(res);
+                }
+
+                res.ResultCode = 1;// 1表示登录成功
+                res.Msg = "登录成功";
+                res.ResultData = dnAccountInfo;
+            }
+            catch (Exception)
+            {
+                res.ResultCode = -99;
+                res.Msg = "未知错误，登录失败！";
+            }
+            return Ok(res);
+        }
     }
 }

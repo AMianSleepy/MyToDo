@@ -60,9 +60,34 @@ namespace DailyApp.WPF.ViewModels
         private void Login()
         {
             // 此处测试传入的Password
-            string testInput = Pwd;
-            // 模拟登录成功
-            RequestClose?.Invoke(new DialogResult(ButtonResult.OK));
+            //string testInput = Pwd;
+
+            if (string.IsNullOrEmpty(Account) || string.IsNullOrEmpty(Pwd))
+            {
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish("登录信息不全！");
+                return;
+            }
+
+            Pwd = Md5Helper.GetMd5(Pwd);
+            
+
+            // 调用Api
+            ApiRequest apiRequest = new ApiRequest()
+            {
+                Method = RestSharp.Method.GET,
+                //控制器名/方法名
+                Route = $"Account/Login?account={Account}&pwd={Pwd}"
+            };
+            ApiResponse response = HttpRestClient.Execute(apiRequest);
+
+            if (response.ResultCode == 1)
+            {
+                RequestClose?.Invoke(new DialogResult(ButtonResult.OK));
+            }
+            else
+            {
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish("登录失败！");
+            }
         }
 
         #region 注册
@@ -133,6 +158,41 @@ namespace DailyApp.WPF.ViewModels
         }
         #endregion
 
+        #region 登录信息
+        /// <summary>
+        /// 账号
+        /// </summary>
+        private string _Account;
+        /// <summary>
+        /// 账号
+        /// </summary>
+        public string Account
+        {
+            get { return _Account; }
+            set 
+            {
+                _Account = value;
+                RaisePropertyChanged();
+            }
+        }
+        /// <summary>
+        /// 密码
+        /// </summary>
+        private string _Pwd;
+        /// <summary>
+        /// 密码
+        /// </summary>
+        public string Pwd
+        {
+            get { return _Pwd; }
+            set
+            {
+                _Pwd = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
         /// <summary>
         /// 是否能够关闭对话框
         /// </summary>
@@ -192,21 +252,6 @@ namespace DailyApp.WPF.ViewModels
         private void ShowLoginInfo()
         {
             SelectedIndex = 0;
-        }
-        #endregion
-
-        #region 密码
-        /// <summary>
-        /// 密码
-        /// </summary>
-        private string _Pwd;
-        /// <summary>
-        /// 密码
-        /// </summary>
-        public string Pwd
-        {
-            get { return _Pwd; }
-            set { _Pwd = value; }
         }
         #endregion
 
