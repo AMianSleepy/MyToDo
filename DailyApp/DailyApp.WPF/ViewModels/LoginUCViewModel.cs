@@ -1,6 +1,7 @@
 ﻿using DailyApp.WPF.DTOs;
 using DailyApp.WPF.HttpClients;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
@@ -24,6 +25,8 @@ namespace DailyApp.WPF.ViewModels
 
         private readonly HttpRestClient HttpRestClient;
 
+        private readonly IEventAggregator Aggregator;
+
         /// <summary>
         /// 登录命令
         /// </summary>
@@ -32,7 +35,7 @@ namespace DailyApp.WPF.ViewModels
         /// <summary>
         /// 构造函数
         /// </summary>
-        public LoginUCViewModel(HttpRestClient _HttpRestClient)
+        public LoginUCViewModel(HttpRestClient _HttpRestClient, IEventAggregator _Aggregator)
         {
             // 登录命令
             LoginCmm = new DelegateCommand(Login);
@@ -47,6 +50,8 @@ namespace DailyApp.WPF.ViewModels
             AccountInfoDTO = new AccountInfoDTO();
             // 请求client
             HttpRestClient = _HttpRestClient;
+            // 发布订阅
+            Aggregator = _Aggregator;
         }
 
         /// <summary>
@@ -68,17 +73,20 @@ namespace DailyApp.WPF.ViewModels
         {
             if (string.IsNullOrEmpty(AccountInfoDTO.Name) || string.IsNullOrEmpty(AccountInfoDTO.Account) || string.IsNullOrEmpty(AccountInfoDTO.Pwd) || string.IsNullOrEmpty(AccountInfoDTO.ConfirmPwd))
             {
-                MessageBox.Show("注册信息不全！", "警告！");
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish("注册信息不全！");
+                //MessageBox.Show("注册信息不全！", "警告！");
                 return;
             }
             else if (AccountInfoDTO.Pwd != AccountInfoDTO.ConfirmPwd)
             {
-                MessageBox.Show("两次输入密码不一致！", "警告！");
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish("两次输入密码不一致！");
+                //MessageBox.Show("两次输入密码不一致！", "警告！");
                 return;
             }
             else if (AccountInfoDTO.Pwd.Length < 4)
             {
-                MessageBox.Show("密码长度小于4！", "警告！");
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish("密码长度小于4！");
+                //MessageBox.Show("密码长度小于4！", "警告！");
                 return;
             }
 
@@ -89,18 +97,21 @@ namespace DailyApp.WPF.ViewModels
 
             // 密码处理
             AccountInfoDTO.Pwd = Md5Helper.GetMd5(AccountInfoDTO.Pwd);
+            AccountInfoDTO.ConfirmPwd = Md5Helper.GetMd5(AccountInfoDTO.ConfirmPwd);
 
             apiRequest.Parameters = AccountInfoDTO;
 
             ApiResponse response = HttpRestClient.Execute(apiRequest);// 请求Api
             if (response.ResultCode == 1)
             {
-                MessageBox.Show(response.Msg);
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish(response.Msg);
+                //MessageBox.Show(response.Msg);
                 SelectedIndex = 0;// 切换到登陆
             }
             else
             {
-                MessageBox.Show(response.Msg);
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish(response.Msg);
+                //MessageBox.Show(response.Msg);
             }
         }
 
