@@ -19,24 +19,44 @@
                              SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
 
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+            <!--菜单-->
             <materialDesign:DrawerHost.LeftDrawerContent>
                 <DockPanel MinWidth="220">
-<!--菜单-->
+                    <StackPanel Margin="0,40" DockPanel.Dock="Top">
+                        <Image Source="/Images/头像.png" Height="80" Width="80">
+                            <!--裁剪-->
+                            <Image.Clip>
+                                <EllipseGeometry Center="40,40" RadiusX="40" RadiusY="40"></EllipseGeometry>
+                            </Image.Clip>
+                        </Image>
+                    </StackPanel>
+                    <!--菜单列表-->
+                    <ListBox ItemsSource="{Binding LeftMenuList}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Background="Transparent">
+                                    <materialDesign:PackIcon Margin="15,0" Kind="{Binding Icon}"/>
+                                    <TextBlock Text="{Binding MenuName}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </DockPanel>
             </materialDesign:DrawerHost.LeftDrawerContent>
-<!--头部-->
+            <!--头部-->
             <DockPanel>
                 <materialDesign:ColorZone Padding="16"
                                   materialDesign:ElevationAssist.Elevation="Dp4"
+                                          MouseDoubleClick="btnMax_Click"
                                   DockPanel.Dock="Top"
                                   Mode="PrimaryMid">
                     <DockPanel LastChildFill="True">
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                            <Image Source="/Images/user.png" Height="30" Width="30">
+                            <Image Source="/Images/头像.png" Height="40" Width="40">
                                 <!--裁剪-->
-                                <!--<Image.Clip>
-                                    <EllipseGeometry Center="12,12" RadiusX="12" RadiusY="12"></EllipseGeometry>
-                                </Image.Clip>-->
+                                <Image.Clip>
+                                    <EllipseGeometry Center="20,20" RadiusX="20" RadiusY="20"></EllipseGeometry>
+                                </Image.Clip>
                             </Image>
                                 <Button x:Name="btnMin" Content="—" Style="{StaticResource MaterialDesignFlatMidBgButton}" Click="btnMin_Click"/>
                             <Button x:Name="btnMax" Content="◱" Style="{StaticResource MaterialDesignFlatMidBgButton}" Click="btnMax_Click"/>

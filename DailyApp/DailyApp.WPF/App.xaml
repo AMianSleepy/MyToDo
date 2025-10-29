@@ -8,9 +8,41 @@
     <prism:PrismApplication.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="DeepPurple" SecondaryColor="Lime" />
+                <materialDesign:BundledTheme BaseTheme="Inherit" PrimaryColor="DeepPurple" SecondaryColor="Lime" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            
+            <!--左侧菜单样式--><!--
+            <Style x:Key="LeftMenuStyle" TargetType="ListBoxItem">
+                <Setter Property="MinHeight" Value="40"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Grid>
+                                <Border x:Name="border"/>
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}"/>
+                            </Grid>
+                            
+                            --><!--触发器--><!--
+                            <ControlTemplate.Triggers>
+                                --><!--是否选中--><!--
+                                <Trigger Property="IsEnabled" Value="True">
+                                    --><!--Value="True"时执行的内容-->
+                                    <!--设置背景颜色--><!--
+                                    <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryHueLightBrush}"/>
+                                    --><!--透明度--><!--
+                                    <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                                </Trigger>
+
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryHueLightBrush}"/>
+                                    <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>-->
         </ResourceDictionary>
     </prism:PrismApplication.Resources>
 </prism:PrismApplication>

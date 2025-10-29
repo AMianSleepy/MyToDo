@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Remove="Images\login.png" />
+    <None Remove="Images\头像.png" />
     <None Remove="Images\登录界面.png" />
   </ItemGroup>
 
@@ -27,6 +28,9 @@
 
   <ItemGroup>
     <Resource Include="Images\login.png" />
+    <Resource Include="Images\头像.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>
