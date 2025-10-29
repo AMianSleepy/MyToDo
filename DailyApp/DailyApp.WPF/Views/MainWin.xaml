@@ -5,11 +5,91 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DailyApp.WPF.Views"
         xmlns:prism="http://prismlibrary.com/"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         prism:ViewModelLocator.AutoWireViewModel="True"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="MainWin" Height="700" Width="1200">
-    <Grid>
-        <TextBlock Text="登录成功后的界面" FontSize="30"></TextBlock>
-    </Grid>
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="-1"></WindowChrome>
+    </WindowChrome.WindowChrome>
+    <materialDesign:DialogHost DialogTheme="Inherit"
+                             Identifier="RootDialog"
+                             SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+
+        <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+            <materialDesign:DrawerHost.LeftDrawerContent>
+                <DockPanel MinWidth="220">
+<!--菜单-->
+                </DockPanel>
+            </materialDesign:DrawerHost.LeftDrawerContent>
+<!--头部-->
+            <DockPanel>
+                <materialDesign:ColorZone Padding="16"
+                                  materialDesign:ElevationAssist.Elevation="Dp4"
+                                  DockPanel.Dock="Top"
+                                  Mode="PrimaryMid">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Image Source="/Images/user.png" Height="30" Width="30">
+                                <!--裁剪-->
+                                <!--<Image.Clip>
+                                    <EllipseGeometry Center="12,12" RadiusX="12" RadiusY="12"></EllipseGeometry>
+                                </Image.Clip>-->
+                            </Image>
+                                <Button x:Name="btnMin" Content="—" Style="{StaticResource MaterialDesignFlatMidBgButton}" Click="btnMin_Click"/>
+                            <Button x:Name="btnMax" Content="◱" Style="{StaticResource MaterialDesignFlatMidBgButton}" Click="btnMax_Click"/>
+                            <Button x:Name="btnClose" Content="✕" Style="{StaticResource MaterialDesignFlatMidBgButton}" Click="btnClose_Click"/>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <ToggleButton x:Name="MenuToggleButton"
+                            AutomationProperties.Name="HamburgerToggleButton"
+                            
+                            IsChecked="False"
+                            Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
+
+                            <Button Margin="24,0,0,0"
+                      materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
+                      Command="{Binding MovePrevCommand}"
+                      Content="{materialDesign:PackIcon Kind=ArrowLeft,
+                                                        Size=24}"
+                      Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                      Style="{StaticResource MaterialDesignToolButton}"
+                      ToolTip="Previous Item" />
+
+                            <Button Margin="16,0,0,0"
+                      materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
+                      Command="{Binding MoveNextCommand}"
+                      Content="{materialDesign:PackIcon Kind=ArrowRight,
+                                                        Size=24}"
+                      Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                      Style="{StaticResource MaterialDesignToolButton}"
+                      ToolTip="Next Item" />
+
+                            <Button Margin="16,0,0,0"
+                      materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
+                      Command="{Binding HomeCommand}"
+                      Content="{materialDesign:PackIcon Kind=Home,
+                                                        Size=24}"
+                      Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                      Style="{StaticResource MaterialDesignToolButton}"
+                      ToolTip="Home" />
+
+ 
+                        </StackPanel>
+
+                        <TextBlock Margin="-20,0,0,0"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       AutomationProperties.Name="Material Design In XAML Toolkit"
+                       FontSize="22"
+                       Text="我的日常" />
+                    </DockPanel>
+                </materialDesign:ColorZone>
+
+            </DockPanel>
+        </materialDesign:DrawerHost>
+    </materialDesign:DialogHost>
 </Window>
