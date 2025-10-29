@@ -42,18 +42,18 @@ namespace DailyApp.WPF
         /// <summary>
         /// 初始化
         /// </summary>
-        protected override void OnInitialized()
-        {
-            var dialog = Container.Resolve<IDialogService>();
-            dialog.ShowDialog("LoginUC", callback =>
-            {
-                if (callback.Result != ButtonResult.OK)
-                {
-                    Environment.Exit(0);
-                    return;
-                }
-                base.OnInitialized();
-            });
-        }
+        //protected override void OnInitialized()
+        //{
+        //    var dialog = Container.Resolve<IDialogService>();
+        //    dialog.ShowDialog("LoginUC", callback =>
+        //    {
+        //        if (callback.Result != ButtonResult.OK)
+        //        {
+        //            Environment.Exit(0);
+        //            return;
+        //        }
+        //        base.OnInitialized();
+        //    });
+        //}
     }
 }
