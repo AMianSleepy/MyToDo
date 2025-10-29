@@ -1,4 +1,7 @@
-﻿using Prism.Commands;
+﻿using DailyApp.WPF.DTOs;
+using DailyApp.WPF.HttpClients;
+using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
@@ -7,6 +10,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DailyApp.WPF.ViewModels
 {
@@ -19,6 +23,10 @@ namespace DailyApp.WPF.ViewModels
 
         public event Action<IDialogResult> RequestClose;
 
+        private readonly HttpRestClient HttpRestClient;
+
+        private readonly IEventAggregator Aggregator;
+
         /// <summary>
         /// 登录命令
         /// </summary>
@@ -27,7 +35,7 @@ namespace DailyApp.WPF.ViewModels
         /// <summary>
         /// 构造函数
         /// </summary>
-        public LoginUCViewModel()
+        public LoginUCViewModel(HttpRestClient _HttpRestClient, IEventAggregator _Aggregator)
         {
             // 登录命令
             LoginCmm = new DelegateCommand(Login);
@@ -36,6 +44,14 @@ namespace DailyApp.WPF.ViewModels
             ShowRegInfoCmm = new DelegateCommand(ShowRegInfo);
             // 显示登录内容命令
             ShowLoginInfoCmm = new DelegateCommand(ShowLoginInfo);
+            // 注册命令
+            RegCmm = new DelegateCommand(Reg);
+            // 实例化注册信息
+            AccountInfoDTO = new AccountInfoDTO();
+            // 请求client
+            HttpRestClient = _HttpRestClient;
+            // 发布订阅
+            Aggregator = _Aggregator;
         }
 
         /// <summary>
@@ -44,10 +60,138 @@ namespace DailyApp.WPF.ViewModels
         private void Login()
         {
             // 此处测试传入的Password
-            string testInput = Pwd;
-            // 模拟登录成功
-            RequestClose?.Invoke(new DialogResult(ButtonResult.OK));
+            //string testInput = Pwd;
+
+            if (string.IsNullOrEmpty(Account) || string.IsNullOrEmpty(Pwd))
+            {
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish("登录信息不全！");
+                return;
+            }
+
+            Pwd = Md5Helper.GetMd5(Pwd);
+            
+
+            // 调用Api
+            ApiRequest apiRequest = new ApiRequest()
+            {
+                Method = RestSharp.Method.GET,
+                //控制器名/方法名
+                Route = $"Account/Login?account={Account}&pwd={Pwd}"
+            };
+            ApiResponse response = HttpRestClient.Execute(apiRequest);
+
+            if (response.ResultCode == 1)
+            {
+                RequestClose?.Invoke(new DialogResult(ButtonResult.OK));
+            }
+            else
+            {
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish("登录失败！");
+            }
         }
+
+        #region 注册
+        // 注册命令
+        public DelegateCommand RegCmm { get; set; }
+
+        private void Reg()
+        {
+            if (string.IsNullOrEmpty(AccountInfoDTO.Name) || string.IsNullOrEmpty(AccountInfoDTO.Account) || string.IsNullOrEmpty(AccountInfoDTO.Pwd) || string.IsNullOrEmpty(AccountInfoDTO.ConfirmPwd))
+            {
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish("注册信息不全！");
+                //MessageBox.Show("注册信息不全！", "警告！");
+                return;
+            }
+            else if (AccountInfoDTO.Pwd != AccountInfoDTO.ConfirmPwd)
+            {
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish("两次输入密码不一致！");
+                //MessageBox.Show("两次输入密码不一致！", "警告！");
+                return;
+            }
+            else if (AccountInfoDTO.Pwd.Length < 4)
+            {
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish("密码长度小于4！");
+                //MessageBox.Show("密码长度小于4！", "警告！");
+                return;
+            }
+
+            // 调用Api
+            ApiRequest apiRequest = new ApiRequest();
+            apiRequest.Method = RestSharp.Method.POST;
+            apiRequest.Route = "Account/Reg";
+
+            // 密码处理
+            AccountInfoDTO.Pwd = Md5Helper.GetMd5(AccountInfoDTO.Pwd);
+            AccountInfoDTO.ConfirmPwd = Md5Helper.GetMd5(AccountInfoDTO.ConfirmPwd);
+
+            apiRequest.Parameters = AccountInfoDTO;
+
+            ApiResponse response = HttpRestClient.Execute(apiRequest);// 请求Api
+            if (response.ResultCode == 1)
+            {
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish(response.Msg);
+                //MessageBox.Show(response.Msg);
+                SelectedIndex = 0;// 切换到登陆
+            }
+            else
+            {
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish(response.Msg);
+                //MessageBox.Show(response.Msg);
+            }
+        }
+
+        /// <summary>
+        /// 注册信息
+        /// </summary>
+        private AccountInfoDTO _AccountInfoDTO;
+        /// <summary>
+        /// 注册信息
+        /// </summary>
+        public AccountInfoDTO AccountInfoDTO
+        {
+            get { return _AccountInfoDTO; }
+            set
+            {
+                _AccountInfoDTO = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        #region 登录信息
+        /// <summary>
+        /// 账号
+        /// </summary>
+        private string _Account;
+        /// <summary>
+        /// 账号
+        /// </summary>
+        public string Account
+        {
+            get { return _Account; }
+            set 
+            {
+                _Account = value;
+                RaisePropertyChanged();
+            }
+        }
+        /// <summary>
+        /// 密码
+        /// </summary>
+        private string _Pwd;
+        /// <summary>
+        /// 密码
+        /// </summary>
+        public string Pwd
+        {
+            get { return _Pwd; }
+            set
+            {
+                _Pwd = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
 
         /// <summary>
         /// 是否能够关闭对话框
@@ -111,19 +255,7 @@ namespace DailyApp.WPF.ViewModels
         }
         #endregion
 
-        #region 密码
-        /// <summary>
-        /// 密码
-        /// </summary>
-        private string _Pwd;
-        /// <summary>
-        /// 密码
-        /// </summary>
-        public string Pwd
-        {
-            get { return _Pwd; }
-            set { _Pwd = value; }
-        }
-        #endregion
+
+
     }
 }

@@ -1,9 +1,15 @@
-﻿namespace DailyApp.API.ApiResponses
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DailyApp.WPF.HttpClients
 {
     /// <summary>
-    /// 响应模型
+    /// 接收模型
     /// </summary>
-    public class ApiResponse
+    internal class ApiResponse
     {
         /// <summary>
         /// 结果编码
@@ -16,7 +22,7 @@
         public string Msg { get; set; }
 
         /// <summary>
-        /// 结果数据
+        /// 数据
         /// </summary>
         public object ResultData { get; set; }
     }

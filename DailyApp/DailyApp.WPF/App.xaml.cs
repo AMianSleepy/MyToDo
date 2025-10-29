@@ -1,5 +1,7 @@
-﻿using DailyApp.WPF.ViewModels;
+﻿using DailyApp.WPF.HttpClients;
+using DailyApp.WPF.ViewModels;
 using DailyApp.WPF.Views;
+using DryIoc;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Services.Dialogs;
@@ -32,6 +34,9 @@ namespace DailyApp.WPF
         {
             // 登录
             containerRegistry.RegisterDialog<LoginUC, LoginUCViewModel>();
+
+            // 请求
+            containerRegistry.GetContainer().Register<HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "webUrl"));
         }
 
         /// <summary>
