@@ -37,6 +37,12 @@ namespace DailyApp.WPF
 
             // 请求
             containerRegistry.GetContainer().Register<HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "webUrl"));
+
+            // 导航页
+            containerRegistry.RegisterForNavigation<HomeUC, HomeUCViewModel>();// 首页
+            containerRegistry.RegisterForNavigation<WaitUC, WaitUCViewModel>();// 待办
+            containerRegistry.RegisterForNavigation<MemoUC, MemoUCViewModel>();// 备忘录
+            containerRegistry.RegisterForNavigation<SettingsUC, SettingsUCViewModel>();// 设置
         }
 
         /// <summary>

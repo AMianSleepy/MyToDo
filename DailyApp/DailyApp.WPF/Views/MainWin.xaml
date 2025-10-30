@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:DailyApp.WPF.Views"
         xmlns:prism="http://prismlibrary.com/"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         prism:ViewModelLocator.AutoWireViewModel="True"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
@@ -31,7 +32,13 @@
                         </Image>
                     </StackPanel>
                     <!--菜单列表-->
-                    <ListBox ItemsSource="{Binding LeftMenuList}">
+                    <ListBox ItemsSource="{Binding LeftMenuList}" x:Name="lbMenu">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding NavigateCmm}" CommandParameter="{Binding ElementName=lbMenu,Path=SelectedItem}"></i:InvokeCommandAction>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <!--触发器行为-->
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Background="Transparent">
@@ -109,6 +116,8 @@
                     </DockPanel>
                 </materialDesign:ColorZone>
 
+                <!--区域-->
+                <ContentControl prism:RegionManager.RegionName="MainViewRegion"></ContentControl>
             </DockPanel>
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>
