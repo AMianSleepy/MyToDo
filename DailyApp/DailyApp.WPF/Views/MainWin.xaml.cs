@@ -61,6 +61,15 @@ namespace DailyApp.WPF.Views
             Environment.Exit(0);
         }
 
- 
+        /// <summary>
+        /// 左侧菜单选项改变
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void lbMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // 移开菜单
+            drawerHost.IsLeftDrawerOpen = false;
+        }
     }
 }

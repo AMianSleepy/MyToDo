@@ -46,6 +46,10 @@ namespace DailyApp.WPF.ViewModels
             RegionManager = _RegionManager;
             // 导航命令
             NavigateCmm = new DelegateCommand<LeftMenuInfo>(Navigate);
+            // 后退
+            GoBackCmm = new DelegateCommand(GoBack);
+            // 前进
+            GoForwardCmm = new DelegateCommand(GoForward);
         }
 
         /// <summary>
@@ -72,7 +76,40 @@ namespace DailyApp.WPF.ViewModels
             {
                 return;
             }
-            RegionManager.Regions["MainViewRegion"].RequestNavigate(menu.ViewName);
+            // 导航 区域
+            RegionManager.Regions["MainViewRegion"].RequestNavigate(menu.ViewName, callback =>
+            {
+                Journal = callback.Context.NavigationService.Journal;// 记录导航足迹
+            });
+        }
+        #endregion
+
+        #region 前进 后退
+        // 历史记录
+        private IRegionNavigationJournal Journal;
+        // 后退命令
+        public DelegateCommand GoBackCmm { get; private set; }
+        // 前进命令
+        public DelegateCommand GoForwardCmm { get; private set; }
+        /// <summary>
+        /// 后退方法
+        /// </summary>
+        private void GoBack()
+        {
+            if (Journal != null && Journal.CanGoBack)
+            {
+                Journal.GoBack();
+            }
+        }
+        /// <summary>
+        /// 前进方法
+        /// </summary>
+        private void GoForward()
+        {
+            if (Journal != null && Journal.CanGoForward)
+            {
+                Journal.GoForward();
+            }
         }
         #endregion
     }
