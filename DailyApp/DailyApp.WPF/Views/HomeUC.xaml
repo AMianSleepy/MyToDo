@@ -89,8 +89,22 @@
                 </DockPanel>
                 
                 <!--数据列表-->
-                <ListBox>
-
+                <!--                                      让每个列表项的内容（如按钮、文本）横向占满ListBox的宽度-->
+                <ListBox ItemsSource="{Binding WaitList}" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                    <!--ListBox的“单项模板”-->
+                    <ListBox.ItemTemplate>
+                        <!--DataTemplate内的所有控件，都会绑定到WaitList中单个WaitItem的属性-->
+                        <DataTemplate>
+                            <DockPanel MaxHeight="100" LastChildFill="False">
+                                <ToggleButton DockPanel.Dock="Right"/>
+                                <!--StackPanel默认垂直排列子元素（从上到下），适合展示“标题+详情”这类有层级的文本-->
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}" Foreground="Black" FontWeight="Bold" FontSize="16"/>
+                                    <TextBlock Text="{Binding Content}" Foreground="Black" Margin="0,5" Opacity="0.8"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </DockPanel>
 
@@ -106,8 +120,21 @@
                 </DockPanel>
 
                 <!--数据列表-->
-                <ListBox>
-
+                <ListBox ItemsSource="{Binding MemoList}" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                    <!--ListBox的“单项模板”-->
+                    <ListBox.ItemTemplate>
+                        <!--DataTemplate内的所有控件，都会绑定到WaitList中单个WaitItem的属性-->
+                        <DataTemplate>
+                            <DockPanel MaxHeight="100" LastChildFill="False">
+                                <ToggleButton DockPanel.Dock="Right"/>
+                                <!--StackPanel默认垂直排列子元素（从上到下），适合展示“标题+详情”这类有层级的文本-->
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}" Foreground="Black" FontWeight="Bold" FontSize="16"/>
+                                    <TextBlock Text="{Binding Content}" Foreground="Black" Margin="0,5" Opacity="0.8"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </DockPanel>
         </Grid>

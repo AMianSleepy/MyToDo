@@ -66,11 +66,11 @@
                                     <EllipseGeometry Center="20,20" RadiusX="20" RadiusY="20"></EllipseGeometry>
                                 </Image.Clip>
                             </Image>
-                                <Button x:Name="btnMin" Content="—" Style="{StaticResource MaterialDesignFlatMidBgButton}" Click="btnMin_Click"/>
+                            <Button x:Name="btnMin" Content="—" Style="{StaticResource MaterialDesignFlatMidBgButton}" Click="btnMin_Click"/>
                             <Button x:Name="btnMax" Content="◱" Style="{StaticResource MaterialDesignFlatMidBgButton}" Click="btnMax_Click"/>
                             <Button x:Name="btnClose" Content="✕" Style="{StaticResource MaterialDesignFlatMidBgButton}" Click="btnClose_Click"/>
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Horizontal">
                             <ToggleButton x:Name="MenuToggleButton"
                             AutomationProperties.Name="HamburgerToggleButton"
@@ -105,7 +105,7 @@
                       Style="{StaticResource MaterialDesignToolButton}"
                       ToolTip="Home" />
 
- 
+
                         </StackPanel>
 
                         <TextBlock Margin="-20,0,0,0"

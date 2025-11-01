@@ -1,4 +1,5 @@
-﻿using DailyApp.WPF.Models;
+﻿using DailyApp.WPF.DTOs;
+using DailyApp.WPF.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +17,8 @@ namespace DailyApp.WPF.ViewModels
         public HomeUCViewModel()
         {
 			CreateStatPanelList();
+            CreateWaitList();
+            CreateMemoList();
         }
         private List<StatPanelInfo> _StatPanelList;
 		/// <summary>
@@ -32,7 +35,7 @@ namespace DailyApp.WPF.ViewModels
 		}
 
 		/// <summary>
-		/// 创建统计数据
+		/// 创建统计面板数据
 		/// </summary>
 		private void CreateStatPanelList()
 		{
@@ -44,5 +47,57 @@ namespace DailyApp.WPF.ViewModels
                 new StatPanelInfo() { Icon = "PlaylistStar", ItemName = "备忘录", BackColor = "#FFFFA000", ViewName = "MemoUC", Result = "20" }
             };
 		}
-	}
+
+        private List<DailyApp.WPF.DTOs.WaitInfoDTO> _WaitList;
+        /// <summary>
+        /// 待办事项数据
+        /// </summary>
+        public List<DailyApp.WPF.DTOs.WaitInfoDTO> WaitList
+        {
+            get { return _WaitList; }
+            set
+            {
+                _WaitList = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// 创建待办事项模拟数据
+        /// </summary>
+        private void CreateWaitList()
+        {
+            WaitList = new List<WaitInfoDTO>
+            { 
+                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
+                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
+            };
+        }
+
+        private List<DailyApp.WPF.DTOs.MemoInfoDTO> _MemoList;
+        /// <summary>
+        /// 备忘录数据
+        /// </summary>
+        public List<DailyApp.WPF.DTOs.MemoInfoDTO> MemoList
+        {
+            get { return _MemoList; }
+            set
+            {
+                _MemoList = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// 创建备忘录测试数据
+        /// </summary>
+        private void CreateMemoList()
+        {
+            MemoList = new List<MemoInfoDTO>
+            {
+                new MemoInfoDTO() { Title = "会议一", Content = "项目方向"},
+                new MemoInfoDTO() { Title = "会议二", Content = "项目内容"},
+            };
+        }
+    }
 }

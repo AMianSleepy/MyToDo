@@ -4,9 +4,48 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DailyApp.WPF.Views"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="Set" FontSize="40"></TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <!--第一行-->
+        <TextBlock Text="设置" Margin="30,10" FontWeight="Bold" FontSize="32"/>
+        <Border BorderBrush="#DDDDDD" BorderThickness="0,0,0,0.5"/>
+
+        <!--第二行-->
+        <Grid Grid.Row="1" Margin="30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <!--菜单列表-->
+            <ListBox Grid.Row="1" ItemsSource="{Binding LeftMenuList}" x:Name="lbMenu" Foreground="Black">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding NavigateCmm}" CommandParameter="{Binding ElementName=lbMenu,Path=SelectedItem}"></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <!--触发器行为-->
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <materialDesign:PackIcon Margin="15,0" Kind="{Binding Icon}"/>
+                            <TextBlock Text="{Binding MenuName}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <ContentControl Grid.Column="1" Margin="10,0" prism:RegionManager.RegionName="SettingRegion"></ContentControl>
+        </Grid>
+
     </Grid>
 </UserControl>
