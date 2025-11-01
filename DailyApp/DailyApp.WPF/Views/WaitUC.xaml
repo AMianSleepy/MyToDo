@@ -7,7 +7,30 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+
+    <md:DialogHost>
+        <md:DrawerHost IsRightDrawerOpen="{Binding IsShowAddWait}">
+            <md:DrawerHost.RightDrawerContent>
+                <DockPanel Width="400" LastChildFill="False">
+                    <TextBlock Text="添加待办" Margin="15,15" FontWeight="Bold" FontSize="30" Foreground="White" DockPanel.Dock="Top"/>
+
+                    <StackPanel Margin="15,0" Orientation="Horizontal" DockPanel.Dock="Top">
+                        <TextBlock Text="状态：" FontSize="18" Foreground="White" VerticalAlignment="Center"/>
+                        <ComboBox SelectedIndex="0" FontSize="18" Foreground="White">
+                            <ComboBoxItem>待办</ComboBoxItem>
+                            <ComboBoxItem>已完成</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!--     提示词-->
+                    <TextBox md:HintAssist.Hint="请输入待办标题" Margin="15" FontSize="18" DockPanel.Dock="Top" Foreground="White"/>
+                    <TextBox md:HintAssist.Hint="请输入待办内容" Margin="15" FontSize="18" DockPanel.Dock="Top" MinHeight="150" Foreground="White"/>
+
+                    <Button Content="添加到待办" Margin="20" DockPanel.Dock="Top"/>
+                </DockPanel>
+            </md:DrawerHost.RightDrawerContent>
+            
+         <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -24,7 +47,7 @@
             </ComboBox>
         </StackPanel>
 
-        <Button Content="＋添加待办" HorizontalAlignment="Right" Margin="15,10"/>
+        <Button Content="＋添加待办" HorizontalAlignment="Right" Margin="15,10" Command="{Binding ShowAddWaitCmm}"/>
 
         <!--第二行-->
         <ItemsControl Grid.Row="1" HorizontalAlignment="Center" ItemsSource="{Binding WaitList}">
@@ -62,5 +85,8 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-    </Grid>
+    </Grid>       
+        </md:DrawerHost>
+    </md:DialogHost>
+
 </UserControl>

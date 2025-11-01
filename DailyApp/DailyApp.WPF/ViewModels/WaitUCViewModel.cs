@@ -1,4 +1,5 @@
 ﻿using DailyApp.WPF.DTOs;
+using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,9 @@ namespace DailyApp.WPF.ViewModels
         public WaitUCViewModel()
         {
             CreateWaitList();
+
+            // 显示添加待办命令
+            ShowAddWaitCmm = new DelegateCommand(ShowAddWait);
         }
 
         private List<DailyApp.WPF.DTOs.WaitInfoDTO> _WaitList;
@@ -57,5 +61,34 @@ namespace DailyApp.WPF.ViewModels
                 new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
             };
         }
+
+        #region 显示“添加待办”
+        private bool _IsShowAddWait;
+        /// <summary>
+        /// 是否显示“添加待办”
+        /// </summary>
+        public bool IsShowAddWait
+        {
+            get { return _IsShowAddWait; }
+            set
+            { 
+                _IsShowAddWait = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// 显示添加待办
+        /// </summary>
+        private void ShowAddWait()
+        {
+            IsShowAddWait = true;
+        }
+
+        /// <summary>
+        /// 显示“添加待办”命令
+        /// </summary>
+        public DelegateCommand ShowAddWaitCmm { get; set; }
+        #endregion
     }
 }
