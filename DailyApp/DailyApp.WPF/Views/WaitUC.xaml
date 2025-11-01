@@ -29,64 +29,71 @@
                     <Button Content="添加到待办" Margin="20" DockPanel.Dock="Top"/>
                 </DockPanel>
             </md:DrawerHost.RightDrawerContent>
-            
-         <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        
-        <!--第一行-->
-        <StackPanel Orientation="Horizontal" Margin="30,5,15,10">
-            <TextBox VerticalAlignment="Center" md:HintAssist.Hint="查找待办事项..." md:TextFieldAssist.HasClearButton="True"/>
-            <TextBlock Text="筛选" Margin="10,0" VerticalAlignment="Center"/>
-            <ComboBox SelectedIndex="0">
-                <ComboBoxItem>全部</ComboBoxItem>
-                <ComboBoxItem>待办</ComboBoxItem>
-                <ComboBoxItem>已完成</ComboBoxItem>
-            </ComboBox>
-        </StackPanel>
 
-        <Button Content="＋添加待办" HorizontalAlignment="Right" Margin="15,10" Command="{Binding ShowAddWaitCmm}"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
 
-        <!--第二行-->
-        <ItemsControl Grid.Row="1" HorizontalAlignment="Center" ItemsSource="{Binding WaitList}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <!--水平排列项，当一行空间不足时自动换行-->
-                    <WrapPanel></WrapPanel>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
+                <!--第一行-->
+                <StackPanel Orientation="Horizontal" Margin="30,5,15,10">
+                    <TextBox VerticalAlignment="Center" md:HintAssist.Hint="查找待办事项..." md:TextFieldAssist.HasClearButton="True"/>
+                    <TextBlock Text="筛选" Margin="10,0" VerticalAlignment="Center"/>
+                    <ComboBox SelectedIndex="0">
+                        <ComboBoxItem>全部</ComboBoxItem>
+                        <ComboBoxItem>待办</ComboBoxItem>
+                        <ComboBoxItem>已完成</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
 
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <!--单张卡片的核心布局-->
-                    <Grid Width="230" Height="180" MaxWidth="250" Margin="3">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
+                <Button Content="＋添加待办" HorizontalAlignment="Right" Margin="15,10" Command="{Binding ShowAddWaitCmm}"/>
 
-                        <md:PopupBox HorizontalAlignment="Right" Panel.ZIndex="1">
-                            <Button Content="删除"/>
-                        </md:PopupBox>
-                        
-                        <Border Background="#CBEAFF" Grid.RowSpan="2" CornerRadius="5"/>
-                        
-                        <TextBlock Text="{Binding Title}" Margin="30,10,5,5" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding Content}" Margin="10,5" Grid.Row="1"/>
+                <!--滚动控件-->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden">
+                    <!--第二行-->
+                    <ItemsControl Grid.Row="1" HorizontalAlignment="Center" ItemsSource="{Binding WaitList}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <!--水平排列项，当一行空间不足时自动换行-->
+                                <WrapPanel></WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
 
-                        <!--画背景装饰-->
-                        <Canvas ClipToBounds="True" Grid.RowSpan="2">
-                            <Ellipse Canvas.Top="13" Canvas.Left="10" Width="12" Height="12" Fill="#4CAF50" Opacity="0.5"/>
-                            <Path Canvas.Bottom="-10" Canvas.Right="-10" Data="M0,0 Q50,50 100,0" Stroke="#E3F2FD" StrokeThickness="30" Stretch="Fill" Width="80" Height="80" Opacity="0.7"/>
-                        </Canvas>
-                    </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </Grid>       
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!--卡片动画-->
+                                <md:TransitioningContent OpeningEffect="{md:TransitionEffect Kind=SlideInFromBottom}">
+                                    <!--单张卡片的核心布局-->
+                                    <Grid Width="230" Height="180" MaxWidth="250" Margin="3">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <md:PopupBox HorizontalAlignment="Right" Panel.ZIndex="1">
+                                            <Button Content="删除"/>
+                                        </md:PopupBox>
+
+                                        <Border Background="#CBEAFF" Grid.RowSpan="2" CornerRadius="5"/>
+
+                                        <TextBlock Text="{Binding Title}" Margin="30,10,5,5" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Content}" Margin="10,5" Grid.Row="1"/>
+
+                                        <!--画背景装饰-->
+                                        <Canvas ClipToBounds="True" Grid.RowSpan="2">
+                                            <Ellipse Canvas.Top="13" Canvas.Left="10" Width="12" Height="12" Fill="#4CAF50" Opacity="0.5"/>
+                                            <Path Canvas.Bottom="-10" Canvas.Right="-10" Data="M0,0 Q50,50 100,0" Stroke="#E3F2FD" StrokeThickness="30" Stretch="Fill" Width="80" Height="80" Opacity="0.7"/>
+                                        </Canvas>
+                                    </Grid>
+                                </md:TransitioningContent>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+            </Grid>
         </md:DrawerHost>
     </md:DialogHost>
-
 </UserControl>

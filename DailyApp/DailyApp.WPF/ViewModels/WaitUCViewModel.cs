@@ -59,6 +59,12 @@ namespace DailyApp.WPF.ViewModels
                 new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
                 new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
                 new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
+                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
+                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
+                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
+                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
+                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
+                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
             };
         }
 

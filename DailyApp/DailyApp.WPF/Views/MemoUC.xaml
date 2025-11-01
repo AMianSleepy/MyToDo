@@ -4,9 +4,80 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DailyApp.WPF.Views"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="Memo" FontSize="40"></TextBlock>
-    </Grid>
+    <md:DialogHost>
+        <md:DrawerHost IsRightDrawerOpen="{Binding IsShowAddMemo}">
+            <md:DrawerHost.RightDrawerContent>
+                <DockPanel Width="400" LastChildFill="False">
+                    <TextBlock Text="添加备忘录" Margin="15,15" FontWeight="Bold" FontSize="30" Foreground="White" DockPanel.Dock="Top"/>
+
+                    <!--     提示词-->
+                    <TextBox md:HintAssist.Hint="请输入备忘录标题" Margin="15" FontSize="18" DockPanel.Dock="Top" Foreground="White"/>
+                    <TextBox md:HintAssist.Hint="请输入备忘录内容" Margin="15" FontSize="18" DockPanel.Dock="Top" MinHeight="150" Foreground="White"/>
+
+                    <Button Content="添加到备忘录" Margin="20" DockPanel.Dock="Top"/>
+                </DockPanel>
+            </md:DrawerHost.RightDrawerContent>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <!--第一行-->
+                <StackPanel Orientation="Horizontal" Margin="30,5,15,10">
+                    <TextBox VerticalAlignment="Center" md:HintAssist.Hint="查找备忘录事项..." md:TextFieldAssist.HasClearButton="True" MaxWidth="700"/>
+                </StackPanel>
+
+                <Button Content="＋添加备忘录" HorizontalAlignment="Right" Margin="15,10" Command="{Binding ShowAddMemoCmm}"/>
+
+                <!--滚动控件-->
+                <!--                       隐藏滚动条-->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden">
+                    <!--第二行-->
+                    <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding MemoList}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <!--水平排列项，当一行空间不足时自动换行-->
+                                <WrapPanel></WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!--添加动画-->
+                                <md:TransitioningContent OpeningEffect="{md:TransitionEffect Kind=ExpandIn}">
+                                    <!--单张卡片的核心布局-->
+                                    <Grid Width="230" Height="180" MaxWidth="250" Margin="3">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <md:PopupBox HorizontalAlignment="Right" Panel.ZIndex="1">
+                                            <Button Content="删除"/>
+                                        </md:PopupBox>
+
+                                        <Border Background="#FFE3B3" Grid.RowSpan="2" CornerRadius="5"/>
+
+                                        <TextBlock Text="{Binding Title}" Margin="30,10,5,5" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Content}" Margin="10,5" Grid.Row="1"/>
+
+                                        <!--画背景装饰-->
+                                        <Canvas ClipToBounds="True" Grid.RowSpan="2">
+                                            <Ellipse Canvas.Top="13" Canvas.Left="10" Width="12" Height="12" Fill="#4CAF50" Opacity="0.5"/>
+                                            <Path Canvas.Bottom="-10" Canvas.Right="-10" Data="M0,0 Q50,50 100,0" Stroke="#E3F2FD" StrokeThickness="30" Stretch="Fill" Width="80" Height="80" Opacity="0.7"/>
+                                        </Canvas>
+                                    </Grid>
+                                </md:TransitioningContent>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </md:DrawerHost>
+    </md:DialogHost>
 </UserControl>
