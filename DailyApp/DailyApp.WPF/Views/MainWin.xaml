@@ -8,6 +8,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         prism:ViewModelLocator.AutoWireViewModel="True"
+        FontFamily="微软雅黑"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="MainWin" Height="700" Width="1200">

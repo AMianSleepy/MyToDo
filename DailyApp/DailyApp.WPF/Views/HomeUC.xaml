@@ -5,8 +5,111 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DailyApp.WPF.Views"
              mc:Ignorable="d" 
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="450" d:DesignWidth="800">
+
     <Grid>
-        <TextBlock Text="Home" FontSize="40"></TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!--第一行-->
+        <TextBlock Text="你好，面要坨了.！今天是2025-10-30 星期四" FontSize="25" Margin="10,6,5,0"></TextBlock>
+        
+        <!--第二行-->
+        <!--ItemsControl 是 WPF 中专门用来展示“集合数据”的控件（比如列表、数组里的多个元素）-->
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding StatPanelList}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <!--UniformGrid（均匀网格），它的特点是所有单元格大小相同，会自动把元素均匀分配到网格中-->
+                    <UniformGrid Columns="4"></UniformGrid>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="{Binding BackColor}" CornerRadius="8" Margin="5,10">
+                        <!--鼠标触发样式：为当前的Border控件定义一个样式（Style），用来统一设置控件的外观或行为-->
+                        <Border.Style>
+                            <!--声明这个样式是专门给Border类型的控件用的（TargetType="Border"），确保样式只作用于Border，不会影响其他控件-->
+                            <Style TargetType="Border">
+                                <!--定义 “触发器”：“当某个条件满足时，自动改变控件的属性”。这里的触发器会监控Border的状态变化-->
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <!--当 IsMouseOver = True，修改Border的Effect（阴影效果）属性-->
+                                        <Setter Property="Effect">
+                                            <Setter.Value>
+                                                <!--                                阴影的偏移距离  阴影的模糊程度-->
+                                                <DropShadowEffect Color="#dddddd" ShadowDepth="3" BlurRadius="15"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        
+                        <Grid>
+                            <!--内部布局容器，垂直排列子元素-->
+                            <StackPanel Margin="20,10">
+                                <md:PackIcon Margin="5,3" Kind="{Binding Icon}" Height="40" Width="40"></md:PackIcon>
+                                <TextBlock Text="{Binding ItemName}" Margin="5,3" FontSize="20"></TextBlock>
+                                <TextBlock Text="{Binding Result}" Margin="5,3" FontSize="40" FontWeight="Bold"></TextBlock>
+                            </StackPanel>
+                            
+                            <!--画背景装饰-->
+                            <Canvas ClipToBounds="True">
+                                <!--    上边距          右边距                                      背景颜色                          透明度-->
+                                <Border Canvas.Top="15" Canvas.Right="-50" Width="120" Height="120" Background="#ffffff" CornerRadius="100" Opacity="0.15"/>
+                                <Border Canvas.Top="90" Canvas.Right="-20" Width="120" Height="120" Background="#ffffff" CornerRadius="100" Opacity="0.15"/>
+                            </Canvas>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        
+        <!--第三行-->
+        <Grid Grid.Row="2" Margin="5,0,5,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <!--第一列-->
+            <Border Grid.Column="0" CornerRadius="8" Margin="5,0" Opacity="0.3" Background="#4FBAFF"></Border>
+            <DockPanel Grid.Column="0" Margin="10,0">
+                <!--                                           置顶-->
+                <DockPanel Margin="10,5" LastChildFill="False" DockPanel.Dock="Top">
+                    <TextBlock Text="待办事项" FontSize="20" FontWeight="Bold"/>
+                    <Button Width="30" Height="30" DockPanel.Dock="Right" VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionAccentButton}">
+                        <md:PackIcon Kind="Add"/>
+                    </Button>
+                </DockPanel>
+                
+                <!--数据列表-->
+                <ListBox>
+
+                </ListBox>
+            </DockPanel>
+
+            <!--第二列-->
+            <Border Grid.Column="1" CornerRadius="8" Margin="5,0" Opacity="0.3" Background="#FFA000"></Border>
+            <DockPanel Grid.Column="1" Margin="10,0">
+                <!--                                           置顶-->
+                <DockPanel Margin="10,5" LastChildFill="False" DockPanel.Dock="Top">
+                    <TextBlock Text="备忘录" FontSize="20" FontWeight="Bold"/>
+                    <Button Width="30" Height="30" DockPanel.Dock="Right" VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionAccentButton}">
+                        <md:PackIcon Kind="Add"/>
+                    </Button>
+                </DockPanel>
+
+                <!--数据列表-->
+                <ListBox>
+
+                </ListBox>
+            </DockPanel>
+        </Grid>
     </Grid>
 </UserControl>
