@@ -43,6 +43,11 @@ namespace DailyApp.WPF
             containerRegistry.RegisterForNavigation<WaitUC, WaitUCViewModel>();// 待办
             containerRegistry.RegisterForNavigation<MemoUC, MemoUCViewModel>();// 备忘录
             containerRegistry.RegisterForNavigation<SettingsUC, SettingsUCViewModel>();// 设置
+
+            // 设置 - 左侧导航
+            containerRegistry.RegisterForNavigation<PersonalUC, PersonalUCViewModel>();// 个性化页面
+            containerRegistry.RegisterForNavigation<AboutUsUC>();// 关于我们页面
+            containerRegistry.RegisterForNavigation<SysSetUC>();// 系统设置页面
         }
 
         /// <summary>
