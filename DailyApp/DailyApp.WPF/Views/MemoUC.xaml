@@ -11,11 +11,11 @@
         <md:DrawerHost IsRightDrawerOpen="{Binding IsShowAddMemo}">
             <md:DrawerHost.RightDrawerContent>
                 <DockPanel Width="400" LastChildFill="False">
-                    <TextBlock Text="添加备忘录" Margin="15,15" FontWeight="Bold" FontSize="30" Foreground="White" DockPanel.Dock="Top"/>
+                    <TextBlock Text="添加备忘录" Margin="15,15" Foreground="#A4A4A4" FontSize="30" DockPanel.Dock="Top"/>
 
                     <!--     提示词-->
-                    <TextBox md:HintAssist.Hint="请输入备忘录标题" Margin="15" FontSize="18" DockPanel.Dock="Top" Foreground="White"/>
-                    <TextBox md:HintAssist.Hint="请输入备忘录内容" Margin="15" FontSize="18" DockPanel.Dock="Top" MinHeight="150" Foreground="White"/>
+                    <TextBox md:HintAssist.Hint="请输入备忘录标题" Margin="15" Foreground="#A4A4A4" FontSize="18" DockPanel.Dock="Top"/>
+                    <TextBox md:HintAssist.Hint="请输入备忘录内容" Margin="15" Foreground="#A4A4A4" FontSize="18" DockPanel.Dock="Top" MinHeight="150"/>
 
                     <Button Content="添加到备忘录" Margin="20" DockPanel.Dock="Top"/>
                 </DockPanel>
@@ -63,7 +63,7 @@
 
                                         <Border Background="#FFE3B3" Grid.RowSpan="2" CornerRadius="5"/>
 
-                                        <TextBlock Text="{Binding Title}" Margin="30,10,5,5" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Title}" Margin="30,10,5,5"/>
                                         <TextBlock Text="{Binding Content}" Margin="10,5" Grid.Row="1"/>
 
                                         <!--画背景装饰-->
