@@ -12,19 +12,19 @@
         <md:DrawerHost IsRightDrawerOpen="{Binding IsShowAddWait}">
             <md:DrawerHost.RightDrawerContent>
                 <DockPanel Width="400" LastChildFill="False">
-                    <TextBlock Text="添加待办" Margin="15,15" FontWeight="Bold" FontSize="30" Foreground="White" DockPanel.Dock="Top"/>
+                    <TextBlock Text="添加待办" Margin="15,15" FontSize="30" Foreground="#A4A4A4" DockPanel.Dock="Top"/>
 
                     <StackPanel Margin="15,0" Orientation="Horizontal" DockPanel.Dock="Top">
-                        <TextBlock Text="状态：" FontSize="18" Foreground="White" VerticalAlignment="Center"/>
-                        <ComboBox SelectedIndex="0" FontSize="18" Foreground="White">
+                        <TextBlock Text="状态：" FontSize="18" Foreground="#A4A4A4" VerticalAlignment="Center"/>
+                        <ComboBox SelectedIndex="0" FontSize="18" Foreground="#A4A4A4">
                             <ComboBoxItem>待办</ComboBoxItem>
                             <ComboBoxItem>已完成</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
 
                     <!--     提示词-->
-                    <TextBox md:HintAssist.Hint="请输入待办标题" Margin="15" FontSize="18" DockPanel.Dock="Top" Foreground="White"/>
-                    <TextBox md:HintAssist.Hint="请输入待办内容" Margin="15" FontSize="18" DockPanel.Dock="Top" MinHeight="150" Foreground="White"/>
+                    <TextBox md:HintAssist.Hint="请输入待办标题" Margin="15" FontSize="18" DockPanel.Dock="Top" Foreground="#A4A4A4"/>
+                    <TextBox md:HintAssist.Hint="请输入待办内容" Margin="15" FontSize="18" DockPanel.Dock="Top" MinHeight="150" Foreground="#A4A4A4"/>
 
                     <Button Content="添加到待办" Margin="20" DockPanel.Dock="Top"/>
                 </DockPanel>
@@ -77,7 +77,7 @@
 
                                         <Border Background="#CBEAFF" Grid.RowSpan="2" CornerRadius="5"/>
 
-                                        <TextBlock Text="{Binding Title}" Margin="30,10,5,5" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Title}" Margin="30,10,5,5"/>
                                         <TextBlock Text="{Binding Content}" Margin="10,5" Grid.Row="1"/>
 
                                         <!--画背景装饰-->
