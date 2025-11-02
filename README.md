@@ -53,8 +53,8 @@ DailyApp.WPF/
 ## 安装与使用
 
 1. **环境要求**：
-   - .NET Framework 4.7.2 及以上
-   - Visual Studio 2019+（推荐）
+   - .NET 8 及以上
+   - Visual Studio 2022+（推荐）
 
 2. **运行步骤**：
    - 克隆本仓库到本地
