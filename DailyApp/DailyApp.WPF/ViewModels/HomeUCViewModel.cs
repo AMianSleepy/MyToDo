@@ -1,5 +1,6 @@
 ﻿using DailyApp.WPF.DTOs;
 using DailyApp.WPF.Models;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,8 +10,8 @@ using System.Threading.Tasks;
 
 namespace DailyApp.WPF.ViewModels
 {
-	internal class HomeUCViewModel : Prism.Mvvm.BindableBase
-	{
+	internal class HomeUCViewModel : Prism.Mvvm.BindableBase, INavigationAware
+    {
 		/// <summary>
 		/// 构造函数
 		/// </summary>
@@ -99,5 +100,53 @@ namespace DailyApp.WPF.ViewModels
                 new MemoInfoDTO() { Title = "会议二", Content = "项目内容"},
             };
         }
+
+        #region 显示登录用户姓名
+        private string _LoginInfo;
+        /// <summary>
+        /// 登录用户信息
+        /// </summary>
+        public string LoginInfo
+        {
+            get { return _LoginInfo; }
+            set 
+            { 
+                _LoginInfo = value;
+                RaisePropertyChanged(); 
+            }
+        }
+
+        /// <summary>
+        /// 进入当前视图时触发。用于读取导航参数并更新
+        /// </summary>
+        /// <param name="navigationContext">导航上下文，包含来源、目标及参数等信息</param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            // 检查是否携带了登录名参数（由登录流程传入）
+            if (navigationContext.Parameters.ContainsKey("LoginName"))
+            {
+                DateTime now = DateTime.Now;
+                string[] week = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+                string loginName = navigationContext.Parameters.GetValue<string>("LoginName");
+
+                LoginInfo = $"您好！{loginName}, 今天是{now.ToString("yyyy-MM-dd")} {week[(int)now.DayOfWeek]}";
+            }
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// 从当前视图导航离开时触发。可在此保存状态、释放资源或取消订阅事件等。
+        /// </summary>
+        /// <param name="navigationContext"></param>
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            
+        }
+        #endregion
     }
 }

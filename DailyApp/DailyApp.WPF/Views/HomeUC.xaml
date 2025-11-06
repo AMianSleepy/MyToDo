@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <!--第一行-->
-        <TextBlock Text="你好，面要坨了.！今天是2025-10-30 星期四" FontSize="25" Margin="10,6,5,0"></TextBlock>
+        <TextBlock Text="{Binding LoginInfo}" FontSize="25" Margin="10,6,5,0"></TextBlock>
         
         <!--第二行-->
         <!--ItemsControl 是 WPF 中专门用来展示“集合数据”的控件（比如列表、数组里的多个元素）-->

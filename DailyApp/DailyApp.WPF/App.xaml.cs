@@ -51,20 +51,42 @@ namespace DailyApp.WPF
         }
 
         /// <summary>
-        /// 初始化
+        /// 应用程序初始化方法
         /// </summary>
-        //protected override void OnInitialized()
-        //{
-        //    var dialog = Container.Resolve<IDialogService>();
-        //    dialog.ShowDialog("LoginUC", callback =>
-        //    {
-        //        if (callback.Result != ButtonResult.OK)
-        //        {
-        //            Environment.Exit(0);
-        //            return;
-        //        }
-        //        base.OnInitialized();
-        //    });
-        //}
+        protected override void OnInitialized()
+        {
+            // 解析并获取对话框服务实例
+            var dialog = Container.Resolve<IDialogService>();
+
+            // 显示登录对话框
+            dialog.ShowDialog("LoginUC", callback =>
+            {
+                // 如果用户未成功登录（点击取消或关闭对话框）
+                if (callback.Result != ButtonResult.OK)
+                {
+                    // 退出应用程序
+                    Environment.Exit(0);
+                    return;
+                }
+
+                // 获取主窗口的 ViewModel
+                var mainVM = Current.MainWindow.DataContext as MainWinViewModel;
+                if (mainVM != null)
+                {
+                    // 检查对话框返回的参数中是否包含登录名
+                    if (callback.Parameters.ContainsKey("LoginName"))
+                    {
+                        // 获取登录名
+                        string name = callback.Parameters.GetValue<string>("LoginName");
+
+                        // 设置默认导航页面
+                        mainVM.SetDefaultNav(name);
+                    }
+                }
+
+                // 调用基类的初始化方法
+                base.OnInitialized();
+            });
+        }
     }
 }
