@@ -1,5 +1,6 @@
 ﻿using DailyApp.WPF.DTOs;
 using DailyApp.WPF.HttpClients;
+using Newtonsoft.Json;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -57,7 +58,7 @@ namespace DailyApp.WPF.ViewModels
         /// <summary>
         /// 登录方法
         /// </summary>
-        private void Login()
+        private async void Login()
         {
             // 此处测试传入的Password
             //string testInput = Pwd;
@@ -69,7 +70,7 @@ namespace DailyApp.WPF.ViewModels
             }
 
             Pwd = Md5Helper.GetMd5(Pwd);
-            
+
 
             // 调用Api
             ApiRequest apiRequest = new ApiRequest()
@@ -78,23 +79,42 @@ namespace DailyApp.WPF.ViewModels
                 //控制器名/方法名
                 Route = $"Account/Login?account={Account}&pwd={Pwd}"
             };
-            ApiResponse response = HttpRestClient.Execute(apiRequest);
 
-            if (response.ResultCode == 1)
+            try
             {
-                RequestClose?.Invoke(new DialogResult(ButtonResult.OK));
+                // 异步调用 API
+                ApiResponse response = await Task.Run(() => HttpRestClient.Execute(apiRequest));
+
+                if (response.ResultCode == 1)
+                {
+                    // 将json格式反序列化成对象
+                    AccountInfoDTO accountInfoDTO = JsonConvert.DeserializeObject<AccountInfoDTO>(response.ResultData.ToString());
+
+                    // 通过对话框将参数从登录界面传至主界面
+                    DialogParameters pairs = new();
+                    pairs.Add("LoginName", accountInfoDTO.Name);
+
+                    RequestClose?.Invoke(new DialogResult(ButtonResult.OK, pairs));
+                }
+                else
+                {
+                    Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish("登录失败！");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish("登录失败！");
+                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish($"登录时发生错误：{ex.Message}");
             }
+
         }
 
         #region 注册
         // 注册命令
         public DelegateCommand RegCmm { get; set; }
-
-        private void Reg()
+        /// <summary>
+        /// 注册方法
+        /// </summary>
+        private async void Reg()
         {
             if (string.IsNullOrEmpty(AccountInfoDTO.Name) || string.IsNullOrEmpty(AccountInfoDTO.Account) || string.IsNullOrEmpty(AccountInfoDTO.Pwd) || string.IsNullOrEmpty(AccountInfoDTO.ConfirmPwd))
             {
@@ -126,17 +146,24 @@ namespace DailyApp.WPF.ViewModels
 
             apiRequest.Parameters = AccountInfoDTO;
 
-            ApiResponse response = HttpRestClient.Execute(apiRequest);// 请求Api
-            if (response.ResultCode == 1)
+            try
             {
-                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish(response.Msg);
-                //MessageBox.Show(response.Msg);
-                SelectedIndex = 0;// 切换到登陆
+                ApiResponse response = await Task.Run(() => HttpRestClient.Execute(apiRequest));// 请求API
+                if (response.ResultCode == 1)
+                {
+                    Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish(response.Msg);
+                    //MessageBox.Show(response.Msg);
+                    SelectedIndex = 0;// 切换到登陆
+                }
+                else
+                {
+                    Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish(response.Msg);
+                    //MessageBox.Show(response.Msg);
+                }
             }
-            else
+            catch (Exception)
             {
-                Aggregator.GetEvent<MsgEvents.MsgEvent>().Publish(response.Msg);
-                //MessageBox.Show(response.Msg);
+                await Task.Run(() => HttpRestClient.Execute(apiRequest));
             }
         }
 

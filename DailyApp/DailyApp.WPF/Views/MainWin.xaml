@@ -17,8 +17,7 @@
         <WindowChrome GlassFrameThickness="-1"></WindowChrome>
     </WindowChrome.WindowChrome>
     <materialDesign:DialogHost DialogTheme="Inherit"
-                             Identifier="RootDialog"
-                             SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+                             Identifier="RootDialog">
 
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}" x:Name="drawerHost">
             <!--菜单-->
@@ -36,7 +35,7 @@
                     <ListBox ItemsSource="{Binding LeftMenuList}" x:Name="lbMenu" SelectionChanged="lbMenu_SelectionChanged">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command="{Binding NavigateCmm}" CommandParameter="{Binding ElementName=lbMenu,Path=SelectedItem}"></i:InvokeCommandAction>
+                                <i:InvokeCommandAction Command="{Binding NavigateCmm}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox}}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <!--触发器行为-->

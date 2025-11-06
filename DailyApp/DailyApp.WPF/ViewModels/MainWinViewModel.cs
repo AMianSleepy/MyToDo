@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace DailyApp.WPF.ViewModels
@@ -112,5 +113,20 @@ namespace DailyApp.WPF.ViewModels
             }
         }
         #endregion
+
+        /// <summary>
+        /// 默认首页
+        /// </summary>
+        /// <param name="loginName">登录名</param>
+        public void SetDefaultNav(string loginName)
+        {
+            NavigationParameters pairs = new();
+            pairs.Add("LoginName", loginName);
+
+            RegionManager.Regions["MainViewRegion"].RequestNavigate("HomeUC", callback =>
+            {
+                Journal = callback.Context.NavigationService.Journal;// 记录导航足迹
+            }, pairs);
+        }
     }
 }
