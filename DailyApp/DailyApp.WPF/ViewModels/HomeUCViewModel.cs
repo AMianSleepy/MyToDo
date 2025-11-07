@@ -1,4 +1,5 @@
 ﻿using DailyApp.WPF.DTOs;
+using DailyApp.WPF.HttpClients;
 using DailyApp.WPF.Models;
 using Prism.Regions;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DailyApp.WPF.ViewModels
@@ -15,11 +17,13 @@ namespace DailyApp.WPF.ViewModels
 		/// <summary>
 		/// 构造函数
 		/// </summary>
-        public HomeUCViewModel()
+        public HomeUCViewModel(HttpClients.HttpRestClient _HttpClient)
         {
-			CreateStatPanelList();
-            CreateWaitList();
-            CreateMemoList();
+			CreateStatPanelList(); // 创建统计数据面板
+            CreateWaitList(); // 创建待办事项模拟数据
+            CreateMemoList(); // 创建备忘录测试数据
+
+            HttpClient = _HttpClient; // 请求API的客户端
         }
         private List<StatPanelInfo> _StatPanelList;
 		/// <summary>
@@ -130,6 +134,9 @@ namespace DailyApp.WPF.ViewModels
                 string loginName = navigationContext.Parameters.GetValue<string>("LoginName");
 
                 LoginInfo = $"您好！{loginName}, 今天是{now.ToString("yyyy-MM-dd")} {week[(int)now.DayOfWeek]}";
+
+                // 统计待办事项
+                CallStatWait();
             }
         }
 
@@ -145,6 +152,42 @@ namespace DailyApp.WPF.ViewModels
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
             
+        }
+        #endregion
+
+        #region 待办事项统计
+        private StatWaitDTO StatWaitDTO { get; set; } = new();
+
+        private readonly HttpRestClient HttpClient;
+
+        /// <summary>
+        /// 调用API获取统计待办实现数据
+        /// </summary>
+        private void CallStatWait()
+        {
+            ApiRequest apiRequest = new();
+            apiRequest.Method = RestSharp.Method.GET;
+            apiRequest.Route = "Wait/StatWait";
+            apiRequest.Parameters = StatWaitDTO;
+
+            ApiResponse response = HttpClient.Execute(apiRequest);
+
+            if (response.ResultCode == 1)
+            {
+                StatWaitDTO = Newtonsoft.Json.JsonConvert.DeserializeObject<StatWaitDTO>(response.ResultData.ToString());
+
+                RefreshWaitStat();
+            }
+        }
+
+        /// <summary>
+        /// 更新待办统计数据
+        /// </summary>
+        private void RefreshWaitStat()
+        {
+            StatPanelList[0].Result = StatWaitDTO.TotalCount.ToString();
+            StatPanelList[1].Result = StatWaitDTO.FinishCount.ToString();
+            StatPanelList[2].Result = StatWaitDTO.FinishPercent;
         }
         #endregion
     }
