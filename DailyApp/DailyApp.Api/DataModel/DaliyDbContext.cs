@@ -19,5 +19,9 @@ namespace DailyApp.Api.DataModel
         // 定义要迁移的数据模型
         public DbSet<AccountInfo> AccountInfo { get; set; }
 
+        /// <summary>
+        /// 待办事项
+        /// </summary>
+        public DbSet<WaitInfo> WaitInfo { get; set; }
     }
 }

@@ -120,7 +120,6 @@ namespace DailyApp.WPF.ViewModels
         /// 进入当前视图时触发。用于读取导航参数并更新
         /// </summary>
         /// <param name="navigationContext">导航上下文，包含来源、目标及参数等信息</param>
-        /// <exception cref="NotImplementedException"></exception>
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             // 检查是否携带了登录名参数（由登录流程传入）
