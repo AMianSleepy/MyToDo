@@ -1,6 +1,8 @@
 ﻿using DailyApp.WPF.HttpClients;
 using DailyApp.WPF.ViewModels;
+using DailyApp.WPF.ViewModels.Dialogs;
 using DailyApp.WPF.Views;
+using DailyApp.WPF.Views.Dialogs;
 using DryIoc;
 using Prism.DryIoc;
 using Prism.Ioc;
@@ -48,6 +50,12 @@ namespace DailyApp.WPF
             containerRegistry.RegisterForNavigation<PersonalUC, PersonalUCViewModel>();// 个性化页面
             containerRegistry.RegisterForNavigation<AboutUsUC>();// 关于我们页面
             containerRegistry.RegisterForNavigation<SysSetUC>();// 系统设置页面
+
+            // 添加待办事项
+            containerRegistry.RegisterForNavigation<AddWaitUC, AddWaitUCViewModel>();
+
+            // 自定义对话框服务
+            containerRegistry.Register<Service.DialogHostService>();
         }
 
         /// <summary>

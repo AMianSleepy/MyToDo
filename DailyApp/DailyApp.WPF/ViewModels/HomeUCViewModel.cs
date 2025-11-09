@@ -1,7 +1,11 @@
 ﻿using DailyApp.WPF.DTOs;
 using DailyApp.WPF.HttpClients;
 using DailyApp.WPF.Models;
+using DailyApp.WPF.Service;
+using DailyApp.WPF.Views.Dialogs;
+using Prism.Commands;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,13 +21,18 @@ namespace DailyApp.WPF.ViewModels
 		/// <summary>
 		/// 构造函数
 		/// </summary>
-        public HomeUCViewModel(HttpClients.HttpRestClient _HttpClient)
+        public HomeUCViewModel(HttpClients.HttpRestClient _HttpClient, DialogHostService _DialogHostService)
         {
 			CreateStatPanelList(); // 创建统计数据面板
             CreateWaitList(); // 创建待办事项模拟数据
             CreateMemoList(); // 创建备忘录测试数据
 
             HttpClient = _HttpClient; // 请求API的客户端
+
+            // 打开添加待办事项命令：使用标准 DelegateCommand 构造函数
+            ShowAddWaitDialogCmm = new DelegateCommand(async () => await ShowAddWaitDialog());
+
+            DialogHostService = _DialogHostService;
         }
         private List<StatPanelInfo> _StatPanelList;
 		/// <summary>
@@ -188,6 +197,31 @@ namespace DailyApp.WPF.ViewModels
             StatPanelList[0].Result = StatWaitDTO.TotalCount.ToString();
             StatPanelList[1].Result = StatWaitDTO.FinishCount.ToString();
             StatPanelList[2].Result = StatWaitDTO.FinishPercent;
+        }
+        #endregion
+
+        #region 
+        // 对话服务（自定义的）
+        private readonly DialogHostService DialogHostService;
+
+        public DelegateCommand ShowAddWaitDialogCmm { get; set; }
+        /// <summary>
+        /// 打开添加待办事项对话框
+        /// </summary>
+        private async Task ShowAddWaitDialog()
+        {
+            var result = await DialogHostService.ShowDialog("AddWaitUC", null);
+            if (result.Result == ButtonResult.OK)
+            {
+                // 接收数据
+                if (result.Parameters.ContainsKey("AddWaitInfo"))
+                {
+                    var addModel = result.Parameters.GetValue<WaitInfoDTO>("AddWaitInfo");
+
+                    // 调用API实现添加待办事项
+
+                }
+            }
         }
         #endregion
     }
