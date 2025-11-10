@@ -24,11 +24,11 @@ namespace DailyApp.WPF.ViewModels
 		/// </summary>
         public HomeUCViewModel(HttpClients.HttpRestClient _HttpClient, DialogHostService _DialogHostService)
         {
-			CreateStatPanelList(); // 创建统计数据面板
-            CreateWaitList(); // 创建待办事项模拟数据
-            CreateMemoList(); // 创建备忘录测试数据
-
             HttpClient = _HttpClient; // 请求API的客户端
+
+			CreateStatPanelList(); // 创建统计数据面板
+            GetWaitingList(); // 创建待办事项模拟数据
+            CreateMemoList(); // 创建备忘录测试数据
 
             // 打开添加待办事项命令：使用标准 DelegateCommand 构造函数
             ShowAddWaitDialogCmm = new DelegateCommand(async () => await ShowAddWaitDialog());
@@ -79,15 +79,28 @@ namespace DailyApp.WPF.ViewModels
         }
 
         /// <summary>
-        /// 创建待办事项模拟数据
+        /// 获取待办状态的待办事项数据
         /// </summary>
-        private void CreateWaitList()
+        private void GetWaitingList()
         {
-            WaitList = new List<WaitInfoDTO>
-            { 
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
+            ApiRequest apiRequest = new()
+            {
+                Method = RestSharp.Method.GET,
+                Route = "Wait/GetWaiting",
             };
+
+            ApiResponse response = HttpClient.Execute(apiRequest);
+
+            if (response.ResultCode == 1)
+            {
+                WaitList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<WaitInfoDTO>>(response.ResultData.ToString());
+
+                RefreshWaitStat();
+            }
+            else
+            {
+                WaitList = new List<WaitInfoDTO>();
+            }
         }
 
         private List<DailyApp.WPF.DTOs.MemoInfoDTO> _MemoList;
@@ -144,7 +157,7 @@ namespace DailyApp.WPF.ViewModels
                 string[] week = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
                 string loginName = navigationContext.Parameters.GetValue<string>("LoginName");
 
-                LoginInfo = $"您好！{loginName}, 今天是{now.ToString("yyyy-MM-dd")} {week[(int)now.DayOfWeek]}";
+                LoginInfo = $"您好！{loginName}, 今天是 {now.ToString("yyyy-MM-dd")} {week[(int)now.DayOfWeek]}";
 
                 // 统计待办事项
                 CallStatWait();

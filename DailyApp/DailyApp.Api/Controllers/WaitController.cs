@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using DailyApp.Api.DataModel;
 using DailyApp.Api.DTOs;
 using Microsoft.AspNetCore.Http;
@@ -60,7 +61,7 @@ namespace DailyApp.Api.Controllers
         [HttpPost]
         public IActionResult AddWait(WaitInfoDTO waitInfoDTO)
         {
-            ApiResponses.ApiResponse reponses = new();
+            ApiResponses.ApiResponse responses = new();
 
             try
             {
@@ -70,22 +71,56 @@ namespace DailyApp.Api.Controllers
                 int result = db.SaveChanges();
                 if (result == 1)
                 {
-                    reponses.ResultCode = 1;
-                    reponses.Msg = "添加待办事项成功";
+                    responses.ResultCode = 1;
+                    responses.Msg = "添加待办事项成功";
                 }
                 else
                 {
-                    reponses.ResultCode = -99;
-                    reponses.Msg = "添加待办事项失败，改变的行数≠1";
+                    responses.ResultCode = -99;
+                    responses.Msg = "添加待办事项失败，改变的行数≠1";
                 }
             }
             catch (Exception ex)
             {
-                reponses.ResultCode = -99;
-                reponses.Msg = $"ex:{ex}";
+                responses.ResultCode = -99;
+                responses.Msg = $"ex:{ex}";
             }
 
-            return Ok(reponses);
+            return Ok(responses);
+        }
+
+        /// <summary>
+        /// 获取待办事项的所有待办状态
+        /// </summary>
+        /// <returns>1：成功；-99：异常</returns>
+        [HttpGet]
+        public IActionResult GetWaiting()
+        {
+            ApiResponses.ApiResponse responses = new();
+
+            try
+            {
+                // Linq
+                var list = from A in db.WaitInfo
+                           where A.Status == 0
+                           select new WaitInfo
+                           {
+                               WaitId = A.WaitId,
+                               Title = A.Title,
+                               Content = A.Content,
+                               Status = A.Status
+                           };
+                responses.ResultCode = 1;
+                responses.Msg = "获取成功";
+                responses.ResultData = list;
+            }
+            catch (Exception ex)
+            {
+                responses.ResultCode = -99;
+                responses.Msg = $"ex:{ex}";
+            }
+
+            return Ok(responses);
         }
     }
 }
