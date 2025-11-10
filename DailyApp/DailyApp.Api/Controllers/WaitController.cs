@@ -1,4 +1,6 @@
-﻿using DailyApp.Api.DataModel;
+﻿using AutoMapper;
+using DailyApp.Api.DataModel;
+using DailyApp.Api.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +15,13 @@ namespace DailyApp.Api.Controllers
     {
         private readonly DaliyDbContext db;
 
-        public WaitController(DaliyDbContext _db)
+        private readonly IMapper mapper;
+
+        public WaitController(DaliyDbContext _db, IMapper _mapper)
         {
             db = _db;
+
+            mapper = _mapper;
         }
 
         /// <summary>
@@ -25,7 +31,7 @@ namespace DailyApp.Api.Controllers
         [HttpGet]
         public IActionResult StatWait()
         {
-            DailyApp.Api.ApiReponses.ApiReponse res = new();
+            ApiResponses.ApiResponse res = new();
 
             try
             {
@@ -44,6 +50,42 @@ namespace DailyApp.Api.Controllers
                 res.Msg = $"错误信息：{ex}";
             }
             return Ok(res);
+        }
+
+        /// <summary>
+        /// 添加待办事项
+        /// </summary>
+        /// <param name="waitInfoDTO">待办事项信息</param>
+        /// <returns>1：添加成功；-99：异常</returns>
+        [HttpPost]
+        public IActionResult AddWait(WaitInfoDTO waitInfoDTO)
+        {
+            ApiResponses.ApiResponse reponses = new();
+
+            try
+            {
+                // DTO -> Info
+                WaitInfo accountInfo = mapper.Map<WaitInfo>(waitInfoDTO);
+                db.WaitInfo.Add(accountInfo);
+                int result = db.SaveChanges();
+                if (result == 1)
+                {
+                    reponses.ResultCode = 1;
+                    reponses.Msg = "添加待办事项成功";
+                }
+                else
+                {
+                    reponses.ResultCode = -99;
+                    reponses.Msg = "添加待办事项失败，改变的行数≠1";
+                }
+            }
+            catch (Exception ex)
+            {
+                reponses.ResultCode = -99;
+                reponses.Msg = $"ex:{ex}";
+            }
+
+            return Ok(reponses);
         }
     }
 }

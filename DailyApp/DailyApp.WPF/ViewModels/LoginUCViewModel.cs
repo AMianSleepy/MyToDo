@@ -20,7 +20,7 @@ namespace DailyApp.WPF.ViewModels
     /// </summary>
     class LoginUCViewModel : BindableBase,IDialogAware// 实现对话框服务的接口
     {
-        public string Title { get; set; } = "我的日常";
+        public string Title { get; set; } = "DailyApp Login";
 
         public event Action<IDialogResult> RequestClose;
 

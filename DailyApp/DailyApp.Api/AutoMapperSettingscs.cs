@@ -5,7 +5,7 @@ using DailyApp.Api.DTOs;
 namespace DailyApp.Api
 {
     /// <summary>
-    /// model之前转换设置
+    /// model之间转换设置
     /// </summary>
     public class AutoMapperSettingscs : Profile
     {
@@ -14,8 +14,10 @@ namespace DailyApp.Api
         /// </summary>
         public AutoMapperSettingscs()
         {
+            // 登录用户信息
             CreateMap<AccountInfoDTO, AccountInfo>().ReverseMap();
-
+            // 待办事项信息
+            CreateMap<WaitInfoDTO, WaitInfo>().ReverseMap();
         }
     }
 }

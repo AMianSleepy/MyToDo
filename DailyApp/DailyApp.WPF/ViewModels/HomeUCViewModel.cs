@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DailyApp.WPF.ViewModels
 {
@@ -34,6 +35,7 @@ namespace DailyApp.WPF.ViewModels
 
             DialogHostService = _DialogHostService;
         }
+
         private List<StatPanelInfo> _StatPanelList;
 		/// <summary>
 		/// 统计面板数据
@@ -219,7 +221,23 @@ namespace DailyApp.WPF.ViewModels
                     var addModel = result.Parameters.GetValue<WaitInfoDTO>("AddWaitInfo");
 
                     // 调用API实现添加待办事项
-
+                    ApiRequest apiRequest = new()
+                    {
+                        Method = RestSharp.Method.POST,
+                        Parameters = addModel,
+                                // 控制器名称/执行的动作（方法名）
+                        Route = "Wait/AddWait",
+                    };
+                    ApiResponse response = HttpClient.Execute(apiRequest);
+                    if (response.ResultCode == 1)
+                    {
+                        CallStatWait();              
+                        MessageBox.Show(response.Msg);
+                    }
+                    else
+                    {
+                        MessageBox.Show(response.Msg);
+                    }
                 }
             }
         }
