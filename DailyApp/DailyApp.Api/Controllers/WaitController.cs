@@ -122,5 +122,48 @@ namespace DailyApp.Api.Controllers
 
             return Ok(responses);
         }
+
+        /// <summary>
+        /// 修改待办事项状态
+        /// </summary>
+        /// <param name="newStatusDTO">新状态待办事项</param>
+        /// <returns>1：修改成功；-1：状态ID错误；-98：失败；-99：异常</returns>
+        [HttpPut]
+        public IActionResult UpDateStatus(WaitInfoDTO newStatusDTO)
+        {
+            ApiResponses.ApiResponse responses = new();
+
+            try
+            {
+                var dbInfo = db.WaitInfo.Find(newStatusDTO.WaitId);
+                if (dbInfo != null)
+                {
+                    dbInfo.Status = newStatusDTO.Status;// 部分修改
+                    int result = db.SaveChanges();
+                    if (result == 1)
+                    {
+                        responses.ResultCode = 1;
+                        responses.Msg = (newStatusDTO.Status == 0 ? "状态成功设置为待办" : "状态成功设置为已完成");
+                    }
+                    else
+                    {
+                        responses.ResultCode = -98;
+                        responses.Msg = "修改待办事项状态失败";
+                    }
+                }
+                else
+                {
+                    responses.ResultCode = -1;
+                    responses.Msg = "请检查待办事项ID是否正确";
+                }
+            }
+            catch (Exception ex)
+            {
+                responses.ResultCode = -99;
+                responses.Msg = $"ex:{ex}";
+            }
+
+            return Ok(responses);
+        }
     }
 }

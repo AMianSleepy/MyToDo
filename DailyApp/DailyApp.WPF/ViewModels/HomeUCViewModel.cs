@@ -34,6 +34,10 @@ namespace DailyApp.WPF.ViewModels
             ShowAddWaitDialogCmm = new DelegateCommand(async () => await ShowAddWaitDialog());
 
             DialogHostService = _DialogHostService;
+
+
+            // 改变待办事项状态命令
+            ChangeWaitStatusCmm = new DelegateCommand<WaitInfoDTO>(ChangeWaitStatus);
         }
 
         private List<StatPanelInfo> _StatPanelList;
@@ -252,6 +256,30 @@ namespace DailyApp.WPF.ViewModels
                         MessageBox.Show(response.Msg);
                     }
                 }
+            }
+        }
+        #endregion
+
+        #region 修改待办事项的状态
+        public DelegateCommand<WaitInfoDTO> ChangeWaitStatusCmm { get; set; }
+
+        private void ChangeWaitStatus(WaitInfoDTO waitInfoDTO)
+        {
+            ApiRequest apiRequest = new()
+            {
+                Method = RestSharp.Method.PUT,
+                Route = "Wait/UpDateStatus",
+                Parameters = waitInfoDTO
+            };
+            ApiResponse response = HttpClient.Execute(apiRequest);
+            if (response.ResultCode == 1)
+            {
+                GetWaitingList(); // 刷新列表
+                CallStatWait(); // 刷新统计数据
+            }
+            else
+            {
+                MessageBox.Show($"ResulltCode = {response.ResultCode};\nMsg = {response.Msg}");
             }
         }
         #endregion

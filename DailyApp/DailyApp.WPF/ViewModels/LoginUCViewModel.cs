@@ -73,7 +73,7 @@ namespace DailyApp.WPF.ViewModels
 
 
             // 调用Api
-            ApiRequest apiRequest = new ApiRequest()
+            ApiRequest apiRequest = new()
             {
                 Method = RestSharp.Method.GET,
                 //控制器名/方法名

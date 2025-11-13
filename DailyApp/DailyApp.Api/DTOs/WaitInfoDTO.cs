@@ -6,13 +6,17 @@
     public class WaitInfoDTO
     {
         /// <summary>
+        /// 待办事项ID
+        /// </summary>
+        public int WaitId { get; set; }
+        /// <summary>
         /// 标题
         /// </summary>
-        public string Title { get; set; }
+        public string? Title { get; set; }
         ///<summary>
         /// 内容
         ///</summary>
-        public string Content { get; set; }
+        public string? Content { get; set; }
         ///<summary>
         /// 状态 0-待办；1-已完成
         ///  </summary>

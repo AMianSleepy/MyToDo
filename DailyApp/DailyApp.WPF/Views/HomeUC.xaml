@@ -96,7 +96,16 @@
                         <!--DataTemplate内的所有控件，都会绑定到WaitList中单个WaitItem的属性-->
                         <DataTemplate>
                             <DockPanel MaxHeight="100" LastChildFill="False">
-                                <ToggleButton DockPanel.Dock="Right"/>
+                                
+                                <!-- 将按钮停靠在父 DockPanel 的右侧 -->
+                                <!-- 绑定当前列表项(WaitInfoDTO)的 Status 属性；默认双向绑定，勾选状态会回写到模型 -->
+                                <!-- 绑定到最近的 ListBox 的 DataContext（即其 ViewModel）中的 ChangeWaitStatusCmm 命令 -->
+                                <!-- 将当前列表项对象本身作为命令参数传入，方便命令中识别具体项 -->
+                                <ToggleButton DockPanel.Dock="Right"
+                                              IsChecked="{Binding Status}"
+                                              Command="{Binding DataContext.ChangeWaitStatusCmm,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBox}}"
+                                              CommandParameter="{Binding}"/>
+                                
                                 <!--StackPanel默认垂直排列子元素（从上到下），适合展示“标题+详情”这类有层级的文本-->
                                 <StackPanel>
                                     <TextBlock Text="{Binding Title}" Foreground="Black" FontWeight="Bold" FontSize="16"/>
