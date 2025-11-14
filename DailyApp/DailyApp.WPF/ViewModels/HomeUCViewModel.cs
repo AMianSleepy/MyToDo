@@ -32,9 +32,10 @@ namespace DailyApp.WPF.ViewModels
 
             // 打开添加待办事项命令：使用标准 DelegateCommand 构造函数
             ShowAddWaitDialogCmm = new DelegateCommand(async () => await ShowAddWaitDialog());
+            // 打开修改待办事项命令
+            ShowEditWaitDialogCmm = new DelegateCommand<WaitInfoDTO>(async (waitInfoDTO) => await ShowEditWaitDialog(waitInfoDTO));
 
             DialogHostService = _DialogHostService;
-
 
             // 改变待办事项状态命令
             ChangeWaitStatusCmm = new DelegateCommand<WaitInfoDTO>(ChangeWaitStatus);
@@ -219,7 +220,7 @@ namespace DailyApp.WPF.ViewModels
         }
         #endregion
 
-        #region 
+        #region 添加待办事项
         // 对话服务（自定义的）
         private readonly DialogHostService DialogHostService;
 
@@ -248,8 +249,8 @@ namespace DailyApp.WPF.ViewModels
                     ApiResponse response = HttpClient.Execute(apiRequest);
                     if (response.ResultCode == 1)
                     {
-                        CallStatWait();              
-                        MessageBox.Show(response.Msg);
+                        CallStatWait();
+                        GetWaitingList();
                     }
                     else
                     {
@@ -280,6 +281,52 @@ namespace DailyApp.WPF.ViewModels
             else
             {
                 MessageBox.Show($"ResulltCode = {response.ResultCode};\nMsg = {response.Msg}");
+            }
+        }
+        #endregion
+
+        #region 编辑待办事项
+        public DelegateCommand<WaitInfoDTO> ShowEditWaitDialogCmm { get; set; }
+        /// <summary>
+        /// 打开修改待办事项对话框
+        /// </summary>
+        private async Task ShowEditWaitDialog(WaitInfoDTO waitInfoDTO)
+        {
+            DialogParameters paras = new();
+            paras.Add("OldWaitInfo", waitInfoDTO);
+
+            var result = await DialogHostService.ShowDialog("EditWaitUC", paras);
+            if (result.Result == ButtonResult.OK)
+            {
+                // 接收数据
+                if (result.Parameters.ContainsKey("EditWaitInfo"))
+                {
+                    var editModel = result.Parameters.GetValue<WaitInfoDTO>("EditWaitInfo");
+
+                    // 调用API实现修改待办事项
+                    ApiRequest apiRequest = new()
+                    {
+                        Method = RestSharp.Method.PUT,
+                        Parameters = editModel,
+                        // 控制器名称/执行的动作（方法名）
+                        Route = "Wait/UpDateWaitInfo",
+                    };
+                    ApiResponse response = HttpClient.Execute(apiRequest);
+                    if (response.ResultCode == 1)
+                    {
+                        if (editModel.Status != waitInfoDTO.Status)
+                        {
+                            // 刷新待办事项列表
+                            GetWaitingList();
+                        }
+                        // 刷新统计数据
+                        CallStatWait();
+                    }
+                    else
+                    {
+                        MessageBox.Show(response.Msg);
+                    }
+                }
             }
         }
         #endregion

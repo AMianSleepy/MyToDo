@@ -24,6 +24,7 @@ namespace DailyApp.WPF.DTOs
         /// 内容
         ///</summary>
         public string Content { get; set; }
+
         ///<summary>
         /// 状态 0-待办；1-已完成
         ///  </summary>
