@@ -45,6 +45,9 @@ namespace DailyApp.WPF.ViewModels
 
             // 区域管理
             RegionManager = _RegionManager;
+
+            // 备忘录数量统计
+            StatMemo();
         }
 
         #region 统计面板
@@ -77,6 +80,7 @@ namespace DailyApp.WPF.ViewModels
 		}
         #endregion
 
+        #region 获取待办状态的待办事项数据
         private List<DailyApp.WPF.DTOs.WaitInfoDTO> _WaitList;
         /// <summary>
         /// 待办事项数据
@@ -107,14 +111,13 @@ namespace DailyApp.WPF.ViewModels
             if (response.ResultCode == 1)
             {
                 WaitList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<WaitInfoDTO>>(response.ResultData.ToString());
-
-                RefreshWaitStat();
             }
             else
             {
                 WaitList = new List<WaitInfoDTO>();
             }
         }
+        #endregion
 
         private List<DailyApp.WPF.DTOs.MemoInfoDTO> _MemoList;
         /// <summary>
@@ -213,18 +216,11 @@ namespace DailyApp.WPF.ViewModels
             {
                 StatWaitDTO = Newtonsoft.Json.JsonConvert.DeserializeObject<StatWaitDTO>(response.ResultData.ToString());
 
-                RefreshWaitStat();
+                // 更新待办统计数据
+                StatPanelList[0].Result = StatWaitDTO.TotalCount.ToString();
+                StatPanelList[1].Result = StatWaitDTO.FinishCount.ToString();
+                StatPanelList[2].Result = StatWaitDTO.FinishPercent;
             }
-        }
-
-        /// <summary>
-        /// 更新待办统计数据
-        /// </summary>
-        private void RefreshWaitStat()
-        {
-            StatPanelList[0].Result = StatWaitDTO.TotalCount.ToString();
-            StatPanelList[1].Result = StatWaitDTO.FinishCount.ToString();
-            StatPanelList[2].Result = StatWaitDTO.FinishPercent;
         }
         #endregion
 
@@ -363,6 +359,25 @@ namespace DailyApp.WPF.ViewModels
                 {
                     RegionManager.Regions["MainViewRegion"].RequestNavigate(statPanelInfo.ViewName);
                 }
+            }
+        }
+        #endregion
+
+        #region 备忘录
+        /// <summary>
+        /// 备忘录数量统计
+        /// </summary>
+        private void StatMemo()
+        {
+            ApiRequest apiRequest = new()
+            {
+                Method = RestSharp.Method.GET,
+                Route = "Memo/StatMemo",
+            };
+            ApiResponse response = HttpClient.Execute(apiRequest);
+            if (response.ResultCode ==1)
+            {
+                StatPanelList[3].Result = response.ResultData.ToString();
             }
         }
         #endregion

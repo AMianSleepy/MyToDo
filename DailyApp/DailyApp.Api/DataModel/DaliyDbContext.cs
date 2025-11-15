@@ -23,5 +23,10 @@ namespace DailyApp.Api.DataModel
         /// 待办事项
         /// </summary>
         public DbSet<WaitInfo> WaitInfo { get; set; }
+
+        /// <summary>
+        /// 备忘录
+        /// </summary>
+        public DbSet<MemoInfo> MemoInfo { get; set; }
     }
 }
