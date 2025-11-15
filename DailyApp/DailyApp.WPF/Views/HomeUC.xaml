@@ -17,8 +17,8 @@
         </Grid.RowDefinitions>
 
         <!--第一行-->
-        <TextBlock Text="{Binding LoginInfo}" FontSize="25" Margin="10,6,5,0"></TextBlock>
-        
+        <TextBlock Text="{Binding LoginInfo}" FontSize="25" Margin="10,6,5,0"/>
+
         <!--第二行-->
         <!--ItemsControl 是 WPF 中专门用来展示“集合数据”的控件（比如列表、数组里的多个元素）-->
         <ItemsControl Grid.Row="1" ItemsSource="{Binding StatPanelList}">
@@ -31,7 +31,12 @@
 
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Background="{Binding BackColor}" CornerRadius="8" Margin="5,10">
+                    <Border Background="{Binding BackColor}" CornerRadius="8" Margin="5,10" Cursor="{Binding MouseStyle}">
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick" 
+                                          Command="{Binding DataContext.NavigateCmm, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
+                                          CommandParameter="{Binding}"/>
+                        </Border.InputBindings>
                         <!--鼠标触发样式：为当前的Border控件定义一个样式（Style），用来统一设置控件的外观或行为-->
                         <Border.Style>
                             <!--声明这个样式是专门给Border类型的控件用的（TargetType="Border"），确保样式只作用于Border，不会影响其他控件-->

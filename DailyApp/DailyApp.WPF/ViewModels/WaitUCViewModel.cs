@@ -3,6 +3,7 @@ using DailyApp.WPF.HttpClients;
 using Newtonsoft.Json;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace DailyApp.WPF.ViewModels
     /// <summary>
     /// 待办事项视图模型
     /// </summary>
-    internal class WaitUCViewModel : BindableBase
+    internal class WaitUCViewModel : BindableBase, INavigationAware
     {
         private readonly HttpRestClient HttpClient;
         /// <summary>
@@ -24,8 +25,6 @@ namespace DailyApp.WPF.ViewModels
         public WaitUCViewModel(HttpRestClient _HttpClient)
         {
             HttpClient = _HttpClient;
-
-            QueryWaitList();
 
             // 显示添加待办命令
             ShowAddWaitCmm = new DelegateCommand(ShowAddWait);
@@ -48,10 +47,22 @@ namespace DailyApp.WPF.ViewModels
         }
 
         #region 查询待办事项数据
-        // 标题搜索
+        // 使用标题筛选
         public string SearchWaitTitle { get; set; }
-        // 状态搜索
-        public int SearchWaitIndex { get; set; }
+
+        private int _SearchWaitIndex;
+        /// <summary>
+        /// 使用状态筛选
+        /// </summary>
+        public int SearchWaitIndex
+        {
+            get { return _SearchWaitIndex; }
+            set 
+            {
+                _SearchWaitIndex = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public DelegateCommand QueryWaitListCmm { get; set; }
         /// <summary>
@@ -112,5 +123,33 @@ namespace DailyApp.WPF.ViewModels
         /// </summary>
         public DelegateCommand ShowAddWaitCmm { get; set; }
         #endregion
+
+        /// <summary>
+        /// 接收数据
+        /// </summary>
+        /// <param name="navigationContext"></param>
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            if (navigationContext.Parameters.ContainsKey("SelectedIndex"))
+            {
+                SearchWaitIndex = navigationContext.Parameters.GetValue<int>("SelectedIndex");
+            }
+            else
+            {
+                SearchWaitIndex = 0;
+            }
+            // 查询待办事项数据
+            QueryWaitList();
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            
+        }
     }
 }

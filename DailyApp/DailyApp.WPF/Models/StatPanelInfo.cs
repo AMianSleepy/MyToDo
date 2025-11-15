@@ -42,5 +42,23 @@ namespace DailyApp.WPF.Models
         /// 点击 跳转到的 界面名称
         /// </summary>
         public string ViewName { get; set; }
+
+        /// <summary>
+        /// 面板中鼠标的样式
+        /// </summary>
+        public string MouseStyle
+        {
+            get
+            {
+                if (ItemName == "完成比例")
+                {
+                    return "";
+                }
+                else
+                {
+                    return "Hand";
+                }
+            }
+        }
     }
 }

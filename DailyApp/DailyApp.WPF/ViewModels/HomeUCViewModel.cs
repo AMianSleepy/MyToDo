@@ -22,7 +22,7 @@ namespace DailyApp.WPF.ViewModels
 		/// <summary>
 		/// 构造函数
 		/// </summary>
-        public HomeUCViewModel(HttpClients.HttpRestClient _HttpClient, DialogHostService _DialogHostService)
+        public HomeUCViewModel(HttpClients.HttpRestClient _HttpClient, DialogHostService _DialogHostService, IRegionManager _RegionManager)
         {
             HttpClient = _HttpClient; // 请求API的客户端
 
@@ -39,8 +39,15 @@ namespace DailyApp.WPF.ViewModels
 
             // 改变待办事项状态命令
             ChangeWaitStatusCmm = new DelegateCommand<WaitInfoDTO>(ChangeWaitStatus);
+
+            // 统计面板导航
+            NavigateCmm = new DelegateCommand<StatPanelInfo>(Navigate);
+
+            // 区域管理
+            RegionManager = _RegionManager;
         }
 
+        #region 统计面板
         private List<StatPanelInfo> _StatPanelList;
 		/// <summary>
 		/// 统计面板数据
@@ -68,6 +75,7 @@ namespace DailyApp.WPF.ViewModels
                 new StatPanelInfo() { Icon = "PlaylistStar", ItemName = "备忘录", BackColor = "#FFFFA000", ViewName = "MemoUC", Result = "20" }
             };
 		}
+        #endregion
 
         private List<DailyApp.WPF.DTOs.WaitInfoDTO> _WaitList;
         /// <summary>
@@ -326,6 +334,34 @@ namespace DailyApp.WPF.ViewModels
                     {
                         MessageBox.Show(response.Msg);
                     }
+                }
+            }
+        }
+        #endregion
+
+        #region 统计面板导航
+        public DelegateCommand<StatPanelInfo> NavigateCmm { get; set; }
+
+        private readonly IRegionManager RegionManager;
+        /// <summary>
+        /// 统计面板导航
+        /// </summary>
+        /// <param name="statPanelInfo"></param>
+        private void Navigate(StatPanelInfo statPanelInfo)
+        {
+            if (!string.IsNullOrEmpty(statPanelInfo.ViewName))
+            {
+                if (statPanelInfo.ItemName == "已完成")
+                {
+                    NavigationParameters paras = new()
+                    {
+                        {"SelectedIndex",2 }
+                    };
+                    RegionManager.Regions["MainViewRegion"].RequestNavigate(statPanelInfo.ViewName, paras);
+                }
+                else
+                {
+                    RegionManager.Regions["MainViewRegion"].RequestNavigate(statPanelInfo.ViewName);
                 }
             }
         }

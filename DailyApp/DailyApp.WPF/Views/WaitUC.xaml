@@ -43,7 +43,7 @@
                             <KeyBinding Key="Enter" Command="{Binding QueryWaitListCmm}"/>
                         </TextBox.InputBindings>
                     </TextBox>
-                    <TextBlock Text="筛选" Margin="10,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="状态：" Margin="10,0" VerticalAlignment="Center"/>
                     <ComboBox SelectedIndex="{Binding SearchWaitIndex}" MinWidth="40">
                         <ComboBox.InputBindings>
                             <KeyBinding Key="Enter" Command="{Binding QueryWaitListCmm}"/>
@@ -54,6 +54,7 @@
                     </ComboBox>
                 </StackPanel>
 
+                <Button Content="筛选" HorizontalAlignment="Right" Margin="15,10,135,10" Command="{Binding QueryWaitListCmm}"/>
                 <Button Content="＋添加待办" HorizontalAlignment="Right" Margin="15,10" Command="{Binding ShowAddWaitCmm}"/>
 
                 <!--滚动控件-->
