@@ -38,9 +38,16 @@
 
                 <!--第一行-->
                 <StackPanel Orientation="Horizontal" Margin="30,5,15,10">
-                    <TextBox VerticalAlignment="Center" md:HintAssist.Hint="查找待办事项..." md:TextFieldAssist.HasClearButton="True"/>
+                    <TextBox VerticalAlignment="Center" md:HintAssist.Hint="查找待办事项..." md:TextFieldAssist.HasClearButton="True" Text="{Binding SearchWaitTitle, UpdateSourceTrigger=PropertyChanged}" MaxWidth="300">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding QueryWaitListCmm}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
                     <TextBlock Text="筛选" Margin="10,0" VerticalAlignment="Center"/>
-                    <ComboBox SelectedIndex="0">
+                    <ComboBox SelectedIndex="{Binding SearchWaitIndex}" MinWidth="40">
+                        <ComboBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding QueryWaitListCmm}"/>
+                        </ComboBox.InputBindings>
                         <ComboBoxItem>全部</ComboBoxItem>
                         <ComboBoxItem>待办</ComboBoxItem>
                         <ComboBoxItem>已完成</ComboBoxItem>
@@ -75,7 +82,7 @@
                                             <Button Content="删除"/>
                                         </md:PopupBox>
 
-                                        <Border Background="#CBEAFF" Grid.RowSpan="2" CornerRadius="5"/>
+                                        <Border Background="{Binding BackColor}" Grid.RowSpan="2" CornerRadius="5"/>
 
                                         <TextBlock Text="{Binding Title}" Margin="30,10,5,5"/>
                                         <TextBlock Text="{Binding Content}" Margin="10,5" Grid.Row="1"/>

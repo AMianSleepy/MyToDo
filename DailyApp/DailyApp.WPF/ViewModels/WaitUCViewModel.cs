@@ -1,4 +1,6 @@
 ﻿using DailyApp.WPF.DTOs;
+using DailyApp.WPF.HttpClients;
+using Newtonsoft.Json;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -15,15 +17,20 @@ namespace DailyApp.WPF.ViewModels
     /// </summary>
     internal class WaitUCViewModel : BindableBase
     {
+        private readonly HttpRestClient HttpClient;
         /// <summary>
         /// 构造函数
         /// </summary>
-        public WaitUCViewModel()
+        public WaitUCViewModel(HttpRestClient _HttpClient)
         {
-            CreateWaitList();
+            HttpClient = _HttpClient;
+
+            QueryWaitList();
 
             // 显示添加待办命令
             ShowAddWaitCmm = new DelegateCommand(ShowAddWait);
+            // 查询待办数据
+            QueryWaitListCmm = new DelegateCommand(QueryWaitList);
         }
 
         private List<DailyApp.WPF.DTOs.WaitInfoDTO> _WaitList;
@@ -40,33 +47,42 @@ namespace DailyApp.WPF.ViewModels
             }
         }
 
+        #region 查询待办事项数据
+        // 标题搜索
+        public string SearchWaitTitle { get; set; }
+        // 状态搜索
+        public int SearchWaitIndex { get; set; }
+
+        public DelegateCommand QueryWaitListCmm { get; set; }
         /// <summary>
-        /// 创建待办事项模拟数据
+        /// 查询待办事项数据
         /// </summary>
-        private void CreateWaitList()
+        private void QueryWaitList()
         {
-            WaitList = new List<WaitInfoDTO>
+            int? status = SearchWaitIndex - 1;
+            if (status == -1)
             {
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
+                status = null;
+            }
+
+            ApiRequest apiRequest = new()
+            {
+                Method = RestSharp.Method.GET,
+                Route = $"Wait/QueryWait?title={SearchWaitTitle}&status={status}",
             };
+
+            ApiResponse apiResponse = HttpClient.Execute(apiRequest);
+
+            if (apiResponse.ResultCode == 1)
+            {
+                WaitList = JsonConvert.DeserializeObject<List<WaitInfoDTO>>(apiResponse.ResultData.ToString());
+            }
+            else
+            {
+                WaitList = new List<WaitInfoDTO>();
+            }
         }
+        #endregion
 
         #region 显示“添加待办”
         private bool _IsShowAddWait;

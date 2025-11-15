@@ -29,5 +29,16 @@ namespace DailyApp.WPF.DTOs
         /// 状态 0-待办；1-已完成
         ///  </summary>
         public int Status { get; set; }
+
+        /// <summary>
+        /// 背景颜色值
+        /// </summary>
+        public string BackColor 
+        {
+            get
+            {
+                return Status == 0 ? "#CBEAFF" : "#3CB371";
+            }
+        }
     }
 }

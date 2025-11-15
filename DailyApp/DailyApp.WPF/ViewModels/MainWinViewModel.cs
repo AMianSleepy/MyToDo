@@ -2,13 +2,7 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace DailyApp.WPF.ViewModels
 {
@@ -51,6 +45,14 @@ namespace DailyApp.WPF.ViewModels
             GoBackCmm = new DelegateCommand(GoBack);
             // 前进
             GoForwardCmm = new DelegateCommand(GoForward);
+            // 回首页
+            HomeCommand = new DelegateCommand(() => {
+                // 回首页时若已有登录名则传入，否则不给参数
+                if (!string.IsNullOrEmpty(_LastLoginName))
+                    SetDefaultNav(_LastLoginName);
+                else
+                    SetDefaultNav(string.Empty);
+            });
         }
 
         /// <summary>
@@ -92,6 +94,8 @@ namespace DailyApp.WPF.ViewModels
         public DelegateCommand GoBackCmm { get; private set; }
         // 前进命令
         public DelegateCommand GoForwardCmm { get; private set; }
+        // 回首页命令
+        public DelegateCommand HomeCommand { get; private set; }
         /// <summary>
         /// 后退方法
         /// </summary>
@@ -114,12 +118,16 @@ namespace DailyApp.WPF.ViewModels
         }
         #endregion
 
+        private string _LastLoginName; // 保存登录名
         /// <summary>
         /// 默认首页
         /// </summary>
         /// <param name="loginName">登录名</param>
         public void SetDefaultNav(string loginName)
         {
+            // 记住登录名
+            _LastLoginName = loginName;
+
             NavigationParameters pairs = new();
             pairs.Add("LoginName", loginName);
 

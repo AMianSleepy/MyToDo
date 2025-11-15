@@ -211,5 +211,48 @@ namespace DailyApp.Api.Controllers
 
             return Ok(responses);
         }
+
+        /// <summary>
+        /// 根据指定的标题和状态参数检索结果
+        /// </summary>
+        /// <param name="title">过滤查询结果的标题。如果为null，结果不按标题过滤</param>
+        /// <param name="status">过滤查询结果的状态码。如果为null，则不按状态过滤结果</param>
+        /// <returns>An <see cref="IActionResult"/>1：查询成功</returns>
+        [HttpGet]
+        public IActionResult QueryWait(string? title, int? status)
+        {
+            ApiResponses.ApiResponse responses = new();
+
+            try
+            {
+                var query = from A in db.WaitInfo
+                            select new WaitInfoDTO
+                            {
+                                WaitId = A.WaitId,
+                                Title = A.Title,
+                                Content = A.Content,
+                                Status = A.Status,
+                            };
+
+                if (!string.IsNullOrEmpty(title))
+                {
+                    query = query.Where(t => t.Title.Contains(title));
+                }
+                if (status != null)
+                {
+                    query = query.Where(t => t.Status == status);
+                }
+
+                responses.ResultCode = 1;
+                responses.Msg = "查询成功";
+                responses.ResultData = query;
+            }
+            catch (Exception ex)
+            {
+                responses.ResultCode = -99;
+                responses.Msg = $"ex:{ex}";
+            }
+            return Ok(responses);
+        }
     }
 }
