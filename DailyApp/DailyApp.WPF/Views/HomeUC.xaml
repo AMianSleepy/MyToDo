@@ -89,7 +89,9 @@
                 <!--                                           置顶-->
                 <DockPanel Margin="10,5" LastChildFill="False" DockPanel.Dock="Top">
                     <TextBlock Text="待办事项" FontSize="20" FontWeight="Bold"/>
-                    <Button Width="30" Height="30" DockPanel.Dock="Right" VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" Command="{Binding ShowAddWaitDialogCmm}">
+                    <Button Width="30" Height="30" DockPanel.Dock="Right" 
+                            VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+                            Command="{Binding ShowAddWaitDialogCmm}">
                         <md:PackIcon Kind="Add"/>
                     </Button>
                 </DockPanel>
@@ -141,7 +143,9 @@
                 <!--                                           置顶-->
                 <DockPanel Margin="10,5" LastChildFill="False" DockPanel.Dock="Top">
                     <TextBlock Text="备忘录" FontSize="20" FontWeight="Bold"/>
-                    <Button Width="30" Height="30" DockPanel.Dock="Right" VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionAccentButton}">
+                    <Button Width="30" Height="30" DockPanel.Dock="Right"
+                            VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+                            Command="{Binding ShowAddMemoDialogCmm}">
                         <md:PackIcon Kind="Add"/>
                     </Button>
                 </DockPanel>

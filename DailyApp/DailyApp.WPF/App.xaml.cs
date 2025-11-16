@@ -58,6 +58,9 @@ namespace DailyApp.WPF
 
             // 自定义对话框服务
             containerRegistry.Register<Service.DialogHostService>();
+
+            // 添加备忘录事项
+            containerRegistry.RegisterForNavigation<AddMemoUC, AddMemoUCViewModel>();
         }
 
         /// <summary>

@@ -16,8 +16,12 @@ namespace DailyApp.Api
         {
             // 登录用户信息
             CreateMap<AccountInfoDTO, AccountInfo>().ReverseMap();
+
             // 待办事项信息
             CreateMap<WaitInfoDTO, WaitInfo>().ReverseMap();
+
+            // 备忘录信息
+            CreateMap<MemoInfoDTO, MemoInfo>().ReverseMap();
         }
     }
 }

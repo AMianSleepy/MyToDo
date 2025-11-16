@@ -31,7 +31,7 @@ namespace DailyApp.WPF.ViewModels
             CreateMemoList(); // 创建备忘录测试数据
 
             // 打开添加待办事项命令：使用标准 DelegateCommand 构造函数
-            ShowAddWaitDialogCmm = new DelegateCommand(async () => await ShowAddWaitDialog());
+            ShowAddWaitDialogCmm = new DelegateCommand(ShowAddWaitDialog);
             // 打开修改待办事项命令
             ShowEditWaitDialogCmm = new DelegateCommand<WaitInfoDTO>(async (waitInfoDTO) => await ShowEditWaitDialog(waitInfoDTO));
 
@@ -48,6 +48,8 @@ namespace DailyApp.WPF.ViewModels
 
             // 备忘录数量统计
             StatMemo();
+
+            ShowAddMemoDialogCmm = new DelegateCommand(ShowAddMemoDialog);
         }
 
         #region 统计面板
@@ -232,7 +234,7 @@ namespace DailyApp.WPF.ViewModels
         /// <summary>
         /// 打开添加待办事项对话框
         /// </summary>
-        private async Task ShowAddWaitDialog()
+        private async void ShowAddWaitDialog()
         {
             var result = await DialogHostService.ShowDialog("AddWaitUC", null);
             if (result.Result == ButtonResult.OK)
@@ -378,6 +380,43 @@ namespace DailyApp.WPF.ViewModels
             if (response.ResultCode ==1)
             {
                 StatPanelList[3].Result = response.ResultData.ToString();
+            }
+        }
+
+
+        public DelegateCommand ShowAddMemoDialogCmm { get; set; }
+
+        private async void ShowAddMemoDialog()
+        {
+            var result = await DialogHostService.ShowDialog("AddMemoUC", null);
+            if (result.Result == ButtonResult.OK)
+            {
+                // 接收数据
+                if (result.Parameters.ContainsKey("AddMemoInfo"))
+                {
+                    var addModel = result.Parameters.GetValue<MemoInfoDTO>("AddMemoInfo");
+
+                    // 调用API实现添加备忘录事项
+                    ApiRequest apiRequest = new()
+                    {
+                        Method = RestSharp.Method.POST,
+                        Parameters = addModel,
+                        // 控制器名称/执行的动作（方法名）
+                        Route = "Memo/AddMemo",
+                    };
+                    ApiResponse response = HttpClient.Execute(apiRequest);
+                    if (response.ResultCode == 1)
+                    {
+                        // 刷新备忘录统计数据
+                        StatMemo();
+                        // 刷新备忘录列表
+
+                    }
+                    else
+                    {
+                        MessageBox.Show(response.Msg);
+                    }
+                }
             }
         }
         #endregion
