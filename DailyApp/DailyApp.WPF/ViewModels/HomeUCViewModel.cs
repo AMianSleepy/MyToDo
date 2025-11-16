@@ -17,18 +17,18 @@ using System.Windows;
 
 namespace DailyApp.WPF.ViewModels
 {
-	internal class HomeUCViewModel : Prism.Mvvm.BindableBase, INavigationAware
+    internal class HomeUCViewModel : Prism.Mvvm.BindableBase, INavigationAware
     {
-		/// <summary>
-		/// 构造函数
-		/// </summary>
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public HomeUCViewModel(HttpClients.HttpRestClient _HttpClient, DialogHostService _DialogHostService, IRegionManager _RegionManager)
         {
             HttpClient = _HttpClient; // 请求API的客户端
 
-			CreateStatPanelList(); // 创建统计数据面板
+            CreateStatPanelList(); // 创建统计数据面板
             GetWaitingList(); // 创建待办事项模拟数据
-            CreateMemoList(); // 创建备忘录测试数据
+            GetMemoList(); // 创建备忘录测试数据
 
             // 打开添加待办事项命令：使用标准 DelegateCommand 构造函数
             ShowAddWaitDialogCmm = new DelegateCommand(ShowAddWaitDialog);
@@ -49,37 +49,40 @@ namespace DailyApp.WPF.ViewModels
             // 备忘录数量统计
             StatMemo();
 
+            // 显示添加备忘录视图
             ShowAddMemoDialogCmm = new DelegateCommand(ShowAddMemoDialog);
+            // 显示修改备忘录视图
+            ShowEditMemoDialogCmm = new DelegateCommand<MemoInfoDTO>(ShowEditMemoDialog);
         }
 
         #region 统计面板
         private List<StatPanelInfo> _StatPanelList;
-		/// <summary>
-		/// 统计面板数据
-		/// </summary>
-		public List<StatPanelInfo> StatPanelList
-		{
-			get { return _StatPanelList; }
-			set
-			{
-				_StatPanelList = value;
-				RaisePropertyChanged();
-			}
-		}
+        /// <summary>
+        /// 统计面板数据
+        /// </summary>
+        public List<StatPanelInfo> StatPanelList
+        {
+            get { return _StatPanelList; }
+            set
+            {
+                _StatPanelList = value;
+                RaisePropertyChanged();
+            }
+        }
 
-		/// <summary>
-		/// 创建统计面板数据
-		/// </summary>
-		private void CreateStatPanelList()
-		{
-			StatPanelList = new List<StatPanelInfo>
+        /// <summary>
+        /// 创建统计面板数据
+        /// </summary>
+        private void CreateStatPanelList()
+        {
+            StatPanelList = new List<StatPanelInfo>
             {
                 new StatPanelInfo() { Icon = "ClockFast", ItemName = "汇总", BackColor = "#FF0CA0FF", ViewName = "WaitUC", Result = "9" },
                 new StatPanelInfo() { Icon = "ClockCheckOutline", ItemName = "已完成", BackColor = "#FF1ECA3A", ViewName = "WaitUC", Result = "9" },
                 new StatPanelInfo() { Icon = "ChartLineVariant", ItemName = "完成比例", BackColor = "#FF02C6DC", ViewName = "", Result = "90%" },
                 new StatPanelInfo() { Icon = "PlaylistStar", ItemName = "备忘录", BackColor = "#FFFFA000", ViewName = "MemoUC", Result = "20" }
             };
-		}
+        }
         #endregion
 
         #region 获取待办状态的待办事项数据
@@ -136,15 +139,26 @@ namespace DailyApp.WPF.ViewModels
         }
 
         /// <summary>
-        /// 创建备忘录测试数据
+        /// 获取备忘录数据
         /// </summary>
-        private void CreateMemoList()
+        private void GetMemoList()
         {
-            MemoList = new List<MemoInfoDTO>
+            ApiRequest apiRequest = new()
             {
-                new MemoInfoDTO() { Title = "会议一", Content = "项目方向"},
-                new MemoInfoDTO() { Title = "会议二", Content = "项目内容"},
+                Method = RestSharp.Method.GET,
+                Route = "Memo/QueryMemo",
             };
+
+            ApiResponse response = HttpClient.Execute(apiRequest);
+
+            if (response.ResultCode == 1)
+            {
+                MemoList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MemoInfoDTO>>(response.ResultData.ToString());
+            }
+            else
+            {
+                MemoList = new List<MemoInfoDTO>();
+            }
         }
 
         #region 显示登录用户姓名
@@ -155,10 +169,10 @@ namespace DailyApp.WPF.ViewModels
         public string LoginInfo
         {
             get { return _LoginInfo; }
-            set 
-            { 
+            set
+            {
                 _LoginInfo = value;
-                RaisePropertyChanged(); 
+                RaisePropertyChanged();
             }
         }
 
@@ -193,7 +207,7 @@ namespace DailyApp.WPF.ViewModels
         /// <param name="navigationContext"></param>
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            
+
         }
         #endregion
 
@@ -249,7 +263,7 @@ namespace DailyApp.WPF.ViewModels
                     {
                         Method = RestSharp.Method.POST,
                         Parameters = addModel,
-                                // 控制器名称/执行的动作（方法名）
+                        // 控制器名称/执行的动作（方法名）
                         Route = "Wait/AddWait",
                     };
                     ApiResponse response = HttpClient.Execute(apiRequest);
@@ -377,7 +391,7 @@ namespace DailyApp.WPF.ViewModels
                 Route = "Memo/StatMemo",
             };
             ApiResponse response = HttpClient.Execute(apiRequest);
-            if (response.ResultCode ==1)
+            if (response.ResultCode == 1)
             {
                 StatPanelList[3].Result = response.ResultData.ToString();
             }
@@ -385,7 +399,9 @@ namespace DailyApp.WPF.ViewModels
 
 
         public DelegateCommand ShowAddMemoDialogCmm { get; set; }
-
+        /// <summary>
+        /// 显示添加备忘录视图
+        /// </summary>
         private async void ShowAddMemoDialog()
         {
             var result = await DialogHostService.ShowDialog("AddMemoUC", null);
@@ -410,7 +426,7 @@ namespace DailyApp.WPF.ViewModels
                         // 刷新备忘录统计数据
                         StatMemo();
                         // 刷新备忘录列表
-
+                        GetMemoList();
                     }
                     else
                     {
@@ -419,6 +435,45 @@ namespace DailyApp.WPF.ViewModels
                 }
             }
         }
-        #endregion
+
+        public DelegateCommand<MemoInfoDTO> ShowEditMemoDialogCmm { get; set; }
+        /// <summary>
+        /// 首页修改备忘录
+        /// </summary>
+        /// <param name="memoInfoDTO">前端传入修改的数据</param>
+        private async void ShowEditMemoDialog(MemoInfoDTO memoInfoDTO)
+        {
+            DialogParameters paras = new();
+            paras.Add("OldMemoInfo", memoInfoDTO);
+
+            var result = await DialogHostService.ShowDialog("EditMemoUC", paras);
+            if (result.Result == ButtonResult.OK)
+            {
+                // 接收数据
+                if (result.Parameters.ContainsKey("EditMemoInfo"))
+                {
+                    var editModel = result.Parameters.GetValue<MemoInfoDTO>("EditMemoInfo");
+
+                    // 调用API实现修改待办事项
+                    ApiRequest apiRequest = new()
+                    {
+                        Method = RestSharp.Method.PUT,
+                        Parameters = editModel,
+                        Route = "Memo/EditMemo",
+                    };
+                    ApiResponse response = HttpClient.Execute(apiRequest);
+                    if (response.ResultCode == 1)
+                    {
+                        // 刷新列表
+                        GetMemoList();
+                    }
+                    else
+                    {
+                        MessageBox.Show(response.Msg);
+                    }
+                }
+            }
+            #endregion
+        }
     }
 }

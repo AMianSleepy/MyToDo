@@ -61,6 +61,8 @@ namespace DailyApp.WPF
 
             // 添加备忘录事项
             containerRegistry.RegisterForNavigation<AddMemoUC, AddMemoUCViewModel>();
+            // 修改备忘录事项
+            containerRegistry.RegisterForNavigation<EditMemoUC, EditMemoUCViewModel>();
         }
 
         /// <summary>
