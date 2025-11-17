@@ -43,7 +43,7 @@
                     </DockPanel.InputBindings>
 
                     <TextBlock Text="欢迎使用" FontWeight="Bold" FontSize="22" DockPanel.Dock="Top" Margin="0,15" HorizontalAlignment="Center"></TextBlock>
-                    <TextBox md:HintAssist.Hint="请输入账号" DockPanel.Dock="Top" Margin="0,15" Text="{Binding Account}"></TextBox>
+                    <TextBox md:HintAssist.Hint="请输入账号" DockPanel.Dock="Top" Margin="0,15" Text="{Binding Account,UpdateSourceTrigger=PropertyChanged}"></TextBox>
                     <PasswordBox md:HintAssist.Hint="请输入密码" DockPanel.Dock="Top"  Margin="0,15" 
                                  pwdExtend:PasswordBoxExtend.Pwd="{Binding Pwd,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <i:Interaction.Behaviors>
