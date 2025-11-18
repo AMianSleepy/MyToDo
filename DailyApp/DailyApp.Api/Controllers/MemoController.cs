@@ -54,7 +54,7 @@ namespace DailyApp.Api.Controllers
         /// <param name="memoInfoDTO">备忘录信息</param>
         /// <returns>1：添加成功；-98：添加失败；-99：异常</returns>
         [HttpPost]
-        public IActionResult Addmemo(DTOs.MemoInfoDTO memoInfoDTO)
+        public IActionResult AddMemo(DTOs.MemoInfoDTO memoInfoDTO)
         {
             ApiResponses.ApiResponse response = new();
             try

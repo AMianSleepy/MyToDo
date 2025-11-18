@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DailyApp.WPF.ViewModels
 {
@@ -30,6 +31,8 @@ namespace DailyApp.WPF.ViewModels
             ShowAddWaitCmm = new DelegateCommand(ShowAddWait);
             // 查询待办数据
             QueryWaitListCmm = new DelegateCommand(QueryWaitList);
+            // 添加待办事项
+            AddWaitCmm = new DelegateCommand(AddWait);
         }
 
         private List<DailyApp.WPF.DTOs.WaitInfoDTO> _WaitList;
@@ -87,6 +90,8 @@ namespace DailyApp.WPF.ViewModels
             if (apiResponse.ResultCode == 1)
             {
                 WaitList = JsonConvert.DeserializeObject<List<WaitInfoDTO>>(apiResponse.ResultData.ToString());
+
+                Visibility = (WaitList.Count > 0) ? Visibility.Hidden : Visibility.Visible;
             }
             else
             {
@@ -151,5 +156,51 @@ namespace DailyApp.WPF.ViewModels
         {
             
         }
+
+        #region 备忘录查询显示
+        private Visibility _Visibility;
+        /// <summary>
+        /// 是否显示列表
+        /// </summary>
+        public Visibility Visibility
+        {
+            get { return _Visibility; }
+            set
+            {
+                _Visibility = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        #region 添加待办事项
+        public WaitInfoDTO WaitInfoDTO { get; set; } = new WaitInfoDTO();
+        public DelegateCommand AddWaitCmm { get; set; }
+        private void AddWait()
+        {
+            if (WaitInfoDTO.Title == null || WaitInfoDTO.Content == null)
+            {
+                MessageBox.Show("标题和内容均不可为空！！！");
+                return;
+            }
+
+            ApiRequest apiRequest = new()
+            {
+                Method = RestSharp.Method.POST,
+                Route = $"Wait/AddWait",
+                Parameters = WaitInfoDTO
+            };
+            ApiResponse response = HttpClient.Execute(apiRequest);
+            if (response.ResultCode == 1)
+            {
+                QueryWaitList();
+                IsShowAddWait = false;
+            }
+            else
+            {
+                MessageBox.Show($"添加失败：{response.Msg}");
+            }
+        }
+        #endregion
     }
 }

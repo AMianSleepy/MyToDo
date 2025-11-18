@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DailyApp.WPF.ViewModels
 {
@@ -29,6 +30,8 @@ namespace DailyApp.WPF.ViewModels
             ShowAddMemoCmm = new DelegateCommand(ShowAddMemo);
             // 查询备忘录数据
             QueryMemoListCmm = new DelegateCommand(QueryMemoList);
+            // 添加备忘录
+            AddMemoCmm = new DelegateCommand(AddMemo);
         }
 
         #region 
@@ -61,10 +64,7 @@ namespace DailyApp.WPF.ViewModels
         /// </summary>
         private void QueryMemoList()
         {
-            MemoList = new List<MemoInfoDTO>
-            {
-                
-            };
+            MemoList = new List<MemoInfoDTO>();
             ApiRequest apiRequest = new()
             {
                 Method = RestSharp.Method.GET,
@@ -76,6 +76,8 @@ namespace DailyApp.WPF.ViewModels
             if (response.ResultCode == 1)
             {
                 MemoList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MemoInfoDTO>>(response.ResultData.ToString());
+
+                Visibility = (MemoList.Count > 0) ? Visibility.Hidden : Visibility.Visible; 
             }
             else
             {
@@ -116,6 +118,52 @@ namespace DailyApp.WPF.ViewModels
         /// 显示“添加备忘录”命令
         /// </summary>
         public DelegateCommand ShowAddMemoCmm { get; set; }
+        #endregion
+
+        #region 备忘录查询显示
+        private Visibility _Visibility;
+        /// <summary>
+        /// 是否显示列表
+        /// </summary>
+        public Visibility Visibility
+        {
+            get { return _Visibility; }
+            set 
+            { 
+                _Visibility = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        #region 添加备忘录
+        public MemoInfoDTO MemoInfoDTO { get; set; } = new MemoInfoDTO();
+        public DelegateCommand AddMemoCmm { get; set; }
+        private void AddMemo()
+        {
+            if (MemoInfoDTO.Title == null || MemoInfoDTO.Content == null)
+            {
+                MessageBox.Show("标题和内容均不可为空！！！");
+                return;
+            }
+
+            ApiRequest apiRequest = new()
+            {
+                Method = RestSharp.Method.POST,
+                Route = $"Memo/AddMemo",
+                Parameters = MemoInfoDTO
+            };
+            ApiResponse response = httpRestClient.Execute(apiRequest);
+            if (response.ResultCode ==1)
+            {
+                QueryMemoList();
+                IsShowAddMemo = false;
+            }
+            else
+            {
+                MessageBox.Show($"添加失败：{response.Msg}");
+            }
+        }
         #endregion
     }
 }
