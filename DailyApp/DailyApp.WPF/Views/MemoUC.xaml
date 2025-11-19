@@ -67,7 +67,9 @@
                                         </Grid.RowDefinitions>
 
                                         <md:PopupBox HorizontalAlignment="Right" Panel.ZIndex="1">
-                                            <Button Content="删除"/>
+                                            <Button Content="删除" 
+                                                    Command="{Binding DataContext.DelCmm,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}" 
+                                                    CommandParameter="{Binding}"/>
                                         </md:PopupBox>
 
                                         <Border Background="#FFE3B3" Grid.RowSpan="2" CornerRadius="5"/>

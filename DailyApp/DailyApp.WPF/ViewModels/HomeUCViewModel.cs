@@ -27,8 +27,8 @@ namespace DailyApp.WPF.ViewModels
             HttpClient = _HttpClient; // 请求API的客户端
 
             CreateStatPanelList(); // 创建统计数据面板
-            GetWaitingList(); // 创建待办事项模拟数据
-            GetMemoList(); // 创建备忘录测试数据
+            GetWaitingList(); // 获取待办状态的待办事项数据
+            GetMemoList(); // 获取备忘录数据
 
             // 打开添加待办事项命令：使用标准 DelegateCommand 构造函数
             ShowAddWaitDialogCmm = new DelegateCommand(ShowAddWaitDialog);
@@ -182,6 +182,10 @@ namespace DailyApp.WPF.ViewModels
         /// <param name="navigationContext">导航上下文，包含来源、目标及参数等信息</param>
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
+            // 刷新列表数据
+            GetWaitingList();
+            GetMemoList();
+
             // 检查是否携带了登录名参数（由登录流程传入）
             if (navigationContext.Parameters.ContainsKey("LoginName"))
             {

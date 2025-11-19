@@ -208,7 +208,6 @@ namespace DailyApp.Api.Controllers
                 responses.ResultCode = -99;
                 responses.Msg = $"ex:{ex}";
             }
-
             return Ok(responses);
         }
 
@@ -246,6 +245,49 @@ namespace DailyApp.Api.Controllers
                 responses.ResultCode = 1;
                 responses.Msg = "查询成功";
                 responses.ResultData = query;
+            }
+            catch (Exception ex)
+            {
+                responses.ResultCode = -99;
+                responses.Msg = $"ex:{ex}";
+            }
+            return Ok(responses);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="waitId">待办事项的ID</param>
+        /// <returns>1：删除成功；-1：ID错误；-98：删除失败；-99：异常</returns>
+        [HttpDelete]
+        public IActionResult DelWait(int waitId)
+        {
+            ApiResponses.ApiResponse responses = new();
+
+            var dbInfo = db.WaitInfo.Find(waitId);
+            if (dbInfo == null)
+            {
+                responses.ResultCode = -1;
+                responses.Msg = "请检查待办事项ID是否正确";
+                return Ok(responses);
+            }
+
+            try
+            {
+                // 移除
+                db.WaitInfo.Remove(dbInfo);
+
+                int result = db.SaveChanges();
+                if (result == 1)
+                {
+                    responses.ResultCode = 1;
+                    responses.Msg = "删除成功";
+                }
+                else
+                {
+                    responses.ResultCode = -98;
+                    responses.Msg = "删除失败";
+                }
             }
             catch (Exception ex)
             {

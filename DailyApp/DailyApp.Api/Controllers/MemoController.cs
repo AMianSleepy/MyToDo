@@ -160,5 +160,48 @@ namespace DailyApp.Api.Controllers
             }
             return Ok(response);
         }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="memoId">待办事项的ID</param>
+        /// <returns>1：删除成功；-1：ID错误；-98：删除失败；-99：异常</returns>
+        [HttpDelete]
+        public IActionResult DelMemo(int memoId)
+        {
+            ApiResponses.ApiResponse responses = new();
+
+            var dbInfo = db.MemoInfo.Find(memoId);
+            if (dbInfo == null)
+            {
+                responses.ResultCode = -1;
+                responses.Msg = "请检查待办事项ID是否正确";
+                return Ok(responses);
+            }
+
+            try
+            {
+                // 移除
+                db.MemoInfo.Remove(dbInfo);
+
+                int result = db.SaveChanges();
+                if (result == 1)
+                {
+                    responses.ResultCode = 1;
+                    responses.Msg = "删除成功";
+                }
+                else
+                {
+                    responses.ResultCode = -98;
+                    responses.Msg = "删除失败";
+                }
+            }
+            catch (Exception ex)
+            {
+                responses.ResultCode = -99;
+                responses.Msg = $"ex:{ex}";
+            }
+            return Ok(responses);
+        }
     }
 }

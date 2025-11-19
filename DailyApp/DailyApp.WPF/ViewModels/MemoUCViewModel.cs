@@ -32,6 +32,8 @@ namespace DailyApp.WPF.ViewModels
             QueryMemoListCmm = new DelegateCommand(QueryMemoList);
             // 添加备忘录
             AddMemoCmm = new DelegateCommand(AddMemo);
+            // 删除
+            DelCmm = new DelegateCommand<MemoInfoDTO>(Del);
         }
 
         #region 
@@ -162,6 +164,34 @@ namespace DailyApp.WPF.ViewModels
             else
             {
                 MessageBox.Show($"添加失败：{response.Msg}");
+            }
+        }
+        #endregion
+
+        #region 删除
+        public DelegateCommand<MemoInfoDTO> DelCmm { get; set; }
+        private void Del(MemoInfoDTO memoInfoDTO)
+        {
+            var selResult = MessageBox.Show($"确定要删除“{memoInfoDTO.Title}”吗？", "提示", MessageBoxButton.OKCancel);
+            if (selResult == MessageBoxResult.OK)
+            {
+                ApiRequest apiRequest = new()
+                {
+                    Method = RestSharp.Method.DELETE,
+                    Route = $"Memo/DelMemo?memoId={memoInfoDTO.MemoId}",
+                };
+
+                ApiResponse apiResponse = httpRestClient.Execute(apiRequest);
+
+                // 删除成功
+                if (apiResponse.ResultCode == 1)
+                {
+                    QueryMemoList();
+                }
+                else
+                {
+                    MessageBox.Show($"删除失败：ex：{apiResponse.Msg}");
+                }
             }
         }
         #endregion

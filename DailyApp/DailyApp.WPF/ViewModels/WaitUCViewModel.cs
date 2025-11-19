@@ -33,6 +33,8 @@ namespace DailyApp.WPF.ViewModels
             QueryWaitListCmm = new DelegateCommand(QueryWaitList);
             // 添加待办事项
             AddWaitCmm = new DelegateCommand(AddWait);
+            // 删除
+            DelCmm = new DelegateCommand<WaitInfoDTO>(Del);
         }
 
         private List<DailyApp.WPF.DTOs.WaitInfoDTO> _WaitList;
@@ -199,6 +201,34 @@ namespace DailyApp.WPF.ViewModels
             else
             {
                 MessageBox.Show($"添加失败：{response.Msg}");
+            }
+        }
+        #endregion
+
+        #region 删除
+        public DelegateCommand<WaitInfoDTO> DelCmm { get; set; }
+        private void Del(WaitInfoDTO waitInfoDTO)
+        {
+            var selResult = MessageBox.Show($"确定要删除“{waitInfoDTO.Title}”吗？", "提示", MessageBoxButton.OKCancel);
+            if (selResult == MessageBoxResult.OK)
+            {
+                ApiRequest apiRequest = new()
+                {
+                    Method = RestSharp.Method.DELETE,
+                    Route = $"Wait/DelWait?waitId={waitInfoDTO.WaitId}",
+                };
+
+                ApiResponse apiResponse = HttpClient.Execute(apiRequest);
+
+                // 删除成功
+                if (apiResponse.ResultCode == 1)
+                {
+                    QueryWaitList();
+                }
+                else
+                {
+                    MessageBox.Show($"删除失败：ex：{apiResponse.Msg}");
+                }
             }
         }
         #endregion
