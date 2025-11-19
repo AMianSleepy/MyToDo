@@ -19,7 +19,7 @@ namespace DailyApp.WPF.HttpClients
         /// 基础地址（统一的前缀，后面拼接 Route）
         /// 例：最终地址 = baseUrl + apiRequest.Route
         /// </summary>
-        private readonly string baseUrl = "http://localhost:10036/api/";
+        private readonly string baseUrl = "http://localhost:5000/api/";
 
         public HttpRestClient()
         {
