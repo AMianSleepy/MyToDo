@@ -1,9 +1,9 @@
-﻿namespace DailyApp.Api.ApiReponses
+﻿namespace DailyApp.Api.ApiResponses
 {
     /// <summary>
     /// 响应模型
     /// </summary>
-    public class ApiReponse
+    public class ApiResponse
     {
         /// <summary>
         /// 结果编码

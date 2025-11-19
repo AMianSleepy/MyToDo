@@ -9,7 +9,7 @@ namespace DailyApp.WPF.Models
     /// <summary>
     /// 首页统计面板信息
     /// </summary>
-    class StatPanelInfo
+    class StatPanelInfo : Prism.Mvvm.BindableBase
     {
         /// <summary>
         /// 统计项图标
@@ -19,10 +19,21 @@ namespace DailyApp.WPF.Models
         /// 统计项名称
         /// </summary>
         public string ItemName { get; set; }
+
+        private string _Result;
         /// <summary>
         /// 统计结果
         /// </summary>
-        public string Result { get; set; }
+        public string Result
+        {
+            get { return _Result; }
+            set 
+            {
+                _Result = value;
+                RaisePropertyChanged();
+            }
+        }
+
         /// <summary>
         /// 背景颜色
         /// </summary>
@@ -31,5 +42,23 @@ namespace DailyApp.WPF.Models
         /// 点击 跳转到的 界面名称
         /// </summary>
         public string ViewName { get; set; }
+
+        /// <summary>
+        /// 面板中鼠标的样式
+        /// </summary>
+        public string MouseStyle
+        {
+            get
+            {
+                if (ItemName == "完成比例")
+                {
+                    return "";
+                }
+                else
+                {
+                    return "Hand";
+                }
+            }
+        }
     }
 }

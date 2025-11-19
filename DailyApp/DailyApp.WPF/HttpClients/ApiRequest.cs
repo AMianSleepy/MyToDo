@@ -30,6 +30,6 @@ namespace DailyApp.WPF.HttpClients
         /// <summary>
         /// 发送的数据类型
         /// </summary>
-        public string ContentType { get; set; } = "application/json";
+        public string ContentType { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using DailyApp.Api.DataModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DailyApp.Api.Migrations
 {
     [DbContext(typeof(DaliyDbContext))]
-    partial class DaliyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251107080455_WaitInfo")]
+    partial class WaitInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,30 +48,6 @@ namespace DailyApp.Api.Migrations
                     b.HasKey("AccountId");
 
                     b.ToTable("AccountInfo");
-                });
-
-            modelBuilder.Entity("DailyApp.Api.DataModel.MemoInfo", b =>
-                {
-                    b.Property<int>("MemoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MemoId"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MemoId");
-
-                    b.ToTable("MemoInfo");
                 });
 
             modelBuilder.Entity("DailyApp.Api.DataModel.WaitInfo", b =>

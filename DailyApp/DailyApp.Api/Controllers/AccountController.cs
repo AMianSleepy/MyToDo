@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DailyApp.Api.ApiReponses;
+using DailyApp.Api.ApiResponses;
 using DailyApp.Api.DataModel;
 using DailyApp.Api.DTOs;
 using Microsoft.AspNetCore.Http;
@@ -42,7 +42,7 @@ namespace DailyApp.Api.Controllers
         [HttpPost]
         public IActionResult Reg(AccountInfoDTO accountInfoDTO)
         {
-            ApiReponse res = new ApiReponse(); // 响应的数据
+            ApiResponse res = new ApiResponse(); // 响应的数据
 
             // 业务
             try
@@ -90,7 +90,7 @@ namespace DailyApp.Api.Controllers
         [HttpGet]
         public IActionResult Login(string account, string pwd)
         {
-            ApiReponse res = new ApiReponse();
+            ApiResponse res = new ApiResponse();
 
             try
             {

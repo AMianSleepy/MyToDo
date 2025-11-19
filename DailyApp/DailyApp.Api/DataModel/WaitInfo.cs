@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DailyApp.WPF.DTOs
+namespace DailyApp.Api.DataModel
 {
     /// <summary>
-    /// 代办事项DTO
+    /// 待办事项数据模型
     /// </summary>
-    class WaitInfoDTO
+    [Table("WaitInfo")]
+    public class WaitInfo
     {
         /// <summary>
         /// 待办事项ID
         /// </summary>
+        [Key]
         public int WaitId { get; set; }
 
         /// <summary>
@@ -21,24 +20,17 @@ namespace DailyApp.WPF.DTOs
         /// </summary>
         public string Title { get; set; }
         ///<summary>
-        /// 内容
+        ///内容
         ///</summary>
         public string Content { get; set; }
-
         ///<summary>
-        /// 状态 0-待办；1-已完成
-        ///  </summary>
+        ///状态 0-待办 1-已完成
+        /// </summary>
         public int Status { get; set; }
 
         /// <summary>
-        /// 背景颜色值
+        /// 创建时间
         /// </summary>
-        public string BackColor 
-        {
-            get
-            {
-                return Status == 0 ? "#CBEAFF" : "#3CB371";
-            }
-        }
+        public DateTime CreateTime { get; set; } = DateTime.Now;
     }
 }

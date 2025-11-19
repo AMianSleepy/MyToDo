@@ -11,11 +11,13 @@
 
   <ItemGroup>
     <None Remove="Images\login.png" />
+    <None Remove="Images\wind.png" />
     <None Remove="Images\头像.png" />
     <None Remove="Images\登录界面.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\wind.png" />
     <Content Include="Images\登录.ico" />
   </ItemGroup>
 

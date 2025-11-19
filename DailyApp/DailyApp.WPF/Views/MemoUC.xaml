@@ -14,10 +14,10 @@
                     <TextBlock Text="添加备忘录" Margin="15,15" Foreground="#A4A4A4" FontSize="30" DockPanel.Dock="Top"/>
 
                     <!--     提示词-->
-                    <TextBox md:HintAssist.Hint="请输入备忘录标题" Margin="15" Foreground="#A4A4A4" FontSize="18" DockPanel.Dock="Top"/>
-                    <TextBox md:HintAssist.Hint="请输入备忘录内容" Margin="15" Foreground="#A4A4A4" FontSize="18" DockPanel.Dock="Top" MinHeight="150"/>
+                    <TextBox md:HintAssist.Hint="请输入备忘录标题" Margin="15" Foreground="#A4A4A4" FontSize="18" DockPanel.Dock="Top" Text="{Binding MemoInfoDTO.Title}"/>
+                    <TextBox md:HintAssist.Hint="请输入备忘录内容" Margin="15" Foreground="#A4A4A4" FontSize="18" DockPanel.Dock="Top" MinHeight="150" Text="{Binding MemoInfoDTO.Content}"/>
 
-                    <Button Content="添加到备忘录" Margin="20" DockPanel.Dock="Top"/>
+                    <Button Content="添加到备忘录" Margin="20" DockPanel.Dock="Top" Command="{Binding AddMemoCmm}"/>
                 </DockPanel>
             </md:DrawerHost.RightDrawerContent>
 
@@ -29,11 +29,20 @@
 
                 <!--第一行-->
                 <StackPanel Orientation="Horizontal" Margin="30,5,15,10">
-                    <TextBox VerticalAlignment="Center" md:HintAssist.Hint="查找备忘录事项..." md:TextFieldAssist.HasClearButton="True" MaxWidth="700"/>
+                    <TextBox VerticalAlignment="Center" md:HintAssist.Hint="查找备忘录事项..." md:TextFieldAssist.HasClearButton="True"
+                             Text="{Binding SearchTitle,UpdateSourceTrigger=PropertyChanged}" MaxWidth="700">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding QueryMemoListCmm}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
                 </StackPanel>
 
                 <Button Content="＋添加备忘录" HorizontalAlignment="Right" Margin="15,10" Command="{Binding ShowAddMemoCmm}"/>
 
+                <StackPanel Grid.Row="1" VerticalAlignment="Center" Visibility="{Binding Visibility}">
+                    <Image Source="/Images/wind.png" Width="250" Height="250"/>
+                </StackPanel>
+                
                 <!--滚动控件-->
                 <!--                       隐藏滚动条-->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden">
@@ -58,7 +67,9 @@
                                         </Grid.RowDefinitions>
 
                                         <md:PopupBox HorizontalAlignment="Right" Panel.ZIndex="1">
-                                            <Button Content="删除"/>
+                                            <Button Content="删除" 
+                                                    Command="{Binding DataContext.DelCmm,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}" 
+                                                    CommandParameter="{Binding}"/>
                                         </md:PopupBox>
 
                                         <Border Background="#FFE3B3" Grid.RowSpan="2" CornerRadius="5"/>

@@ -7,6 +7,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="系统设置"/>
+        <TextBlock Margin="16" TextWrapping="Wrap">
+            <Run Text="系统设置" FontSize="20" FontWeight="Bold"/>
+            <LineBreak/>
+            <Run Text="在此配置应用首选项："/>
+            <LineBreak/>
+            <Run Text="• 外观主题与颜色（MaterialDesignInXaml）"/>
+            <LineBreak/>
+            <Run Text="• 启动与导航（Prism 区域导航）"/>
+            <LineBreak/>
+            <Run Text="• 后端 API 基址（RestSharp 调用 ASP.NET Core API）"/>
+            <LineBreak/>
+            <Run Text="• 数据与同步（.NET 8 + EF Core 服务端）"/>
+            <LineBreak/>
+        </TextBlock>
     </Grid>
 </UserControl>

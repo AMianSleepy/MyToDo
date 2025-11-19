@@ -37,16 +37,21 @@
             <!--第一块 登录-->
             <md:TransitionerSlide>
                 <DockPanel Margin="15" VerticalAlignment="Center">
+                    
+                    <DockPanel.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding LoginCmm}"/>
+                    </DockPanel.InputBindings>
+
                     <TextBlock Text="欢迎使用" FontWeight="Bold" FontSize="22" DockPanel.Dock="Top" Margin="0,15" HorizontalAlignment="Center"></TextBlock>
-                    <TextBox md:HintAssist.Hint="请输入账号" DockPanel.Dock="Top" Margin="0,15" Text="{Binding Account}"></TextBox>
+                    <TextBox md:HintAssist.Hint="请输入账号" DockPanel.Dock="Top" Margin="0,15" Text="{Binding Account,UpdateSourceTrigger=PropertyChanged}"></TextBox>
                     <PasswordBox md:HintAssist.Hint="请输入密码" DockPanel.Dock="Top"  Margin="0,15" 
                                  pwdExtend:PasswordBoxExtend.Pwd="{Binding Pwd,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <i:Interaction.Behaviors>
                             <pwdExtend:PasswordBoxBehavior></pwdExtend:PasswordBoxBehavior>
                         </i:Interaction.Behaviors>
                     </PasswordBox>
-                    <!-- 将按钮设为默认按钮，使 Enter 触发 LoginCmm -->
-                    <Button Content="登录" DockPanel.Dock="Top" Margin="0,15" Command="{Binding LoginCmm}" IsDefault="True"/>
+
+                    <Button Content="登录" DockPanel.Dock="Top" Margin="0,15" Command="{Binding LoginCmm}"/>
 
                     <DockPanel Margin="0.5" LastChildFill="False">
                         <TextBlock Text="注册账号">

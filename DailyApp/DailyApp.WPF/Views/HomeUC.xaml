@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:DailyApp.WPF.Views"
              mc:Ignorable="d" 
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
@@ -16,8 +17,8 @@
         </Grid.RowDefinitions>
 
         <!--第一行-->
-        <TextBlock Text="{Binding LoginInfo}" FontSize="25" Margin="10,6,5,0"></TextBlock>
-        
+        <TextBlock Text="{Binding LoginInfo}" FontSize="25" Margin="10,6,5,0"/>
+
         <!--第二行-->
         <!--ItemsControl 是 WPF 中专门用来展示“集合数据”的控件（比如列表、数组里的多个元素）-->
         <ItemsControl Grid.Row="1" ItemsSource="{Binding StatPanelList}">
@@ -30,7 +31,12 @@
 
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Background="{Binding BackColor}" CornerRadius="8" Margin="5,10">
+                    <Border Background="{Binding BackColor}" CornerRadius="8" Margin="5,10" Cursor="{Binding MouseStyle}">
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick" 
+                                          Command="{Binding DataContext.NavigateCmm, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
+                                          CommandParameter="{Binding}"/>
+                        </Border.InputBindings>
                         <!--鼠标触发样式：为当前的Border控件定义一个样式（Style），用来统一设置控件的外观或行为-->
                         <Border.Style>
                             <!--声明这个样式是专门给Border类型的控件用的（TargetType="Border"），确保样式只作用于Border，不会影响其他控件-->
@@ -78,25 +84,48 @@
             </Grid.ColumnDefinitions>
             
             <!--第一列-->
-            <Border Grid.Column="0" CornerRadius="8" Margin="5,0" Opacity="0.3" Background="#4FBAFF"></Border>
+            <Border Grid.Column="0" CornerRadius="8" Margin="5,0" Opacity="0.3" Background="#4FBAFF"/>
             <DockPanel Grid.Column="0" Margin="10,0">
                 <!--                                           置顶-->
                 <DockPanel Margin="10,5" LastChildFill="False" DockPanel.Dock="Top">
                     <TextBlock Text="待办事项" FontSize="20" FontWeight="Bold"/>
-                    <Button Width="30" Height="30" DockPanel.Dock="Right" VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionAccentButton}">
+                    <Button Width="30" Height="30" DockPanel.Dock="Right" 
+                            VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+                            Command="{Binding ShowAddWaitDialogCmm}">
                         <md:PackIcon Kind="Add"/>
                     </Button>
                 </DockPanel>
-                
+
                 <!--数据列表-->
                 <!--                                      让每个列表项的内容（如按钮、文本）横向占满ListBox的宽度-->
                 <ListBox ItemsSource="{Binding WaitList}" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+
+                    <!-- 行为触发器集合：用于声明交互事件与命令绑定 -->
+                    <i:Interaction.Triggers> 
+                        <!-- 监听 ListBox 的双击事件（MouseDoubleClick） -->
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <!-- InvokeCommandAction: 双击发生时调用 ViewModel 中的 ShowEditWaitDialogCmm 命令 -->
+                            <!-- CommandParameter 绑定为当前 ListBox 的 SelectedItem（即被双击的待办项） -->
+                            <i:InvokeCommandAction Command="{Binding ShowEditWaitDialogCmm}" 
+                                                   CommandParameter="{Binding SelectedItem,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBox}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
                     <!--ListBox的“单项模板”-->
                     <ListBox.ItemTemplate>
                         <!--DataTemplate内的所有控件，都会绑定到WaitList中单个WaitItem的属性-->
                         <DataTemplate>
                             <DockPanel MaxHeight="100" LastChildFill="False">
-                                <ToggleButton DockPanel.Dock="Right"/>
+
+                                <!-- 将按钮停靠在父 DockPanel 的右侧 -->
+                                <!-- 绑定当前列表项(WaitInfoDTO)的 Status 属性；默认双向绑定，勾选状态会回写到模型 -->
+                                <!-- 绑定到最近的 ListBox 的 DataContext（即其 ViewModel）中的 ChangeWaitStatusCmm 命令 -->
+                                <!-- 将当前列表项对象本身作为命令参数传入，方便命令中识别具体项 -->
+                                <ToggleButton DockPanel.Dock="Right"
+                                              IsChecked="{Binding Status}"
+                                              Command="{Binding DataContext.ChangeWaitStatusCmm,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBox}}"
+                                              CommandParameter="{Binding}"/>
+
                                 <!--StackPanel默认垂直排列子元素（从上到下），适合展示“标题+详情”这类有层级的文本-->
                                 <StackPanel>
                                     <TextBlock Text="{Binding Title}" Foreground="Black" FontWeight="Bold" FontSize="16"/>
@@ -114,19 +143,27 @@
                 <!--                                           置顶-->
                 <DockPanel Margin="10,5" LastChildFill="False" DockPanel.Dock="Top">
                     <TextBlock Text="备忘录" FontSize="20" FontWeight="Bold"/>
-                    <Button Width="30" Height="30" DockPanel.Dock="Right" VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionAccentButton}">
+                    <Button Width="30" Height="30" DockPanel.Dock="Right"
+                            VerticalAlignment="Top" Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+                            Command="{Binding ShowAddMemoDialogCmm}">
                         <md:PackIcon Kind="Add"/>
                     </Button>
                 </DockPanel>
 
                 <!--数据列表-->
                 <ListBox ItemsSource="{Binding MemoList}" HorizontalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding ShowEditMemoDialogCmm}" 
+                                                   CommandParameter="{Binding SelectedItem,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBox}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
                     <!--ListBox的“单项模板”-->
                     <ListBox.ItemTemplate>
                         <!--DataTemplate内的所有控件，都会绑定到WaitList中单个WaitItem的属性-->
                         <DataTemplate>
                             <DockPanel MaxHeight="100" LastChildFill="False">
-                                <ToggleButton DockPanel.Dock="Right"/>
                                 <!--StackPanel默认垂直排列子元素（从上到下），适合展示“标题+详情”这类有层级的文本-->
                                 <StackPanel>
                                     <TextBlock Text="{Binding Title}" Foreground="Black" FontWeight="Bold" FontSize="16"/>

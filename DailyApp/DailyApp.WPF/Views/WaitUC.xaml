@@ -16,17 +16,17 @@
 
                     <StackPanel Margin="15,0" Orientation="Horizontal" DockPanel.Dock="Top">
                         <TextBlock Text="状态：" FontSize="18" Foreground="#A4A4A4" VerticalAlignment="Center"/>
-                        <ComboBox SelectedIndex="0" FontSize="18" Foreground="#A4A4A4">
+                        <ComboBox SelectedIndex="{Binding WaitInfoDTO.Status}" FontSize="18" Foreground="#A4A4A4">
                             <ComboBoxItem>待办</ComboBoxItem>
                             <ComboBoxItem>已完成</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
 
                     <!--     提示词-->
-                    <TextBox md:HintAssist.Hint="请输入待办标题" Margin="15" FontSize="18" DockPanel.Dock="Top" Foreground="#A4A4A4"/>
-                    <TextBox md:HintAssist.Hint="请输入待办内容" Margin="15" FontSize="18" DockPanel.Dock="Top" MinHeight="150" Foreground="#A4A4A4"/>
+                    <TextBox md:HintAssist.Hint="请输入待办标题" Margin="15" FontSize="18" DockPanel.Dock="Top" Foreground="#A4A4A4" Text="{Binding WaitInfoDTO.Title}"/>
+                    <TextBox md:HintAssist.Hint="请输入待办内容" Margin="15" FontSize="18" DockPanel.Dock="Top" MinHeight="150" Foreground="#A4A4A4" Text="{Binding WaitInfoDTO.Content}"/>
 
-                    <Button Content="添加到待办" Margin="20" DockPanel.Dock="Top"/>
+                    <Button Content="添加到待办" Margin="20" DockPanel.Dock="Top" Command="{Binding AddWaitCmm}"/>
                 </DockPanel>
             </md:DrawerHost.RightDrawerContent>
 
@@ -38,17 +38,29 @@
 
                 <!--第一行-->
                 <StackPanel Orientation="Horizontal" Margin="30,5,15,10">
-                    <TextBox VerticalAlignment="Center" md:HintAssist.Hint="查找待办事项..." md:TextFieldAssist.HasClearButton="True"/>
-                    <TextBlock Text="筛选" Margin="10,0" VerticalAlignment="Center"/>
-                    <ComboBox SelectedIndex="0">
+                    <TextBox VerticalAlignment="Center" md:HintAssist.Hint="查找待办事项..." md:TextFieldAssist.HasClearButton="True" Text="{Binding SearchWaitTitle, UpdateSourceTrigger=PropertyChanged}" MaxWidth="300">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding QueryWaitListCmm}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <TextBlock Text="状态：" Margin="10,0" VerticalAlignment="Center"/>
+                    <ComboBox SelectedIndex="{Binding SearchWaitIndex}" MinWidth="40">
+                        <ComboBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding QueryWaitListCmm}"/>
+                        </ComboBox.InputBindings>
                         <ComboBoxItem>全部</ComboBoxItem>
                         <ComboBoxItem>待办</ComboBoxItem>
                         <ComboBoxItem>已完成</ComboBoxItem>
                     </ComboBox>
                 </StackPanel>
 
+                <Button Content="筛选" HorizontalAlignment="Right" Margin="15,10,135,10" Command="{Binding QueryWaitListCmm}"/>
                 <Button Content="＋添加待办" HorizontalAlignment="Right" Margin="15,10" Command="{Binding ShowAddWaitCmm}"/>
 
+                <StackPanel Grid.Row="1" VerticalAlignment="Center" Visibility="{Binding Visibility}">
+                    <Image Source="/Images/wind.png" Width="250" Height="250"/>
+                </StackPanel>
+                
                 <!--滚动控件-->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden">
                     <!--第二行-->
@@ -72,10 +84,12 @@
                                         </Grid.RowDefinitions>
 
                                         <md:PopupBox HorizontalAlignment="Right" Panel.ZIndex="1">
-                                            <Button Content="删除"/>
+                                            <Button Content="删除" 
+                                                    Command="{Binding DataContext.DelCmm,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}" 
+                                                    CommandParameter="{Binding}"/>
                                         </md:PopupBox>
 
-                                        <Border Background="#CBEAFF" Grid.RowSpan="2" CornerRadius="5"/>
+                                        <Border Background="{Binding BackColor}" Grid.RowSpan="2" CornerRadius="5"/>
 
                                         <TextBlock Text="{Binding Title}" Margin="30,10,5,5"/>
                                         <TextBlock Text="{Binding Content}" Margin="10,5" Grid.Row="1"/>

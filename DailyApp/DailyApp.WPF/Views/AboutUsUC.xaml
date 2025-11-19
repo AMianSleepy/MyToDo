@@ -7,6 +7,21 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="AboutUS"/>
+        <TextBlock Margin="16" TextWrapping="Wrap">
+            <Run Text="关于 DailyApp" FontSize="20" FontWeight="Bold"/>
+            <LineBreak/>
+            <Run Text="版本：.NET 8 / WPF (Prism)"/>
+            <LineBreak/>
+            <Run Text="前端：WPF + Prism + MaterialDesignInXaml"/>
+            <LineBreak/>
+            <Run Text="后端：ASP.NET Core Web API + EF Core（SQL Server）"/>
+            <LineBreak/>
+            <Run Text="主要功能：待办事项、备忘录、统计与个性化设置"/>
+            <LineBreak/>
+            <Run Text="源代码：MyToDo（本地解决方案）"/>
+            <LineBreak/>
+            <LineBreak/>
+            <Run Text="本应用演示 Prism 区域导航、对话框服务、以及 RestSharp 调用后端 API 的完整流程。"/>
+        </TextBlock>
     </Grid>
 </UserControl>

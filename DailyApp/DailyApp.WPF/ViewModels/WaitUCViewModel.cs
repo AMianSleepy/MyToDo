@@ -1,11 +1,15 @@
 ﻿using DailyApp.WPF.DTOs;
+using DailyApp.WPF.HttpClients;
+using Newtonsoft.Json;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DailyApp.WPF.ViewModels
 {
@@ -13,17 +17,24 @@ namespace DailyApp.WPF.ViewModels
     /// <summary>
     /// 待办事项视图模型
     /// </summary>
-    internal class WaitUCViewModel : BindableBase
+    internal class WaitUCViewModel : BindableBase, INavigationAware
     {
+        private readonly HttpRestClient HttpClient;
         /// <summary>
         /// 构造函数
         /// </summary>
-        public WaitUCViewModel()
+        public WaitUCViewModel(HttpRestClient _HttpClient)
         {
-            CreateWaitList();
+            HttpClient = _HttpClient;
 
             // 显示添加待办命令
             ShowAddWaitCmm = new DelegateCommand(ShowAddWait);
+            // 查询待办数据
+            QueryWaitListCmm = new DelegateCommand(QueryWaitList);
+            // 添加待办事项
+            AddWaitCmm = new DelegateCommand(AddWait);
+            // 删除
+            DelCmm = new DelegateCommand<WaitInfoDTO>(Del);
         }
 
         private List<DailyApp.WPF.DTOs.WaitInfoDTO> _WaitList;
@@ -40,33 +51,56 @@ namespace DailyApp.WPF.ViewModels
             }
         }
 
+        #region 查询待办事项数据
+        // 使用标题筛选
+        public string SearchWaitTitle { get; set; }
+
+        private int _SearchWaitIndex;
         /// <summary>
-        /// 创建待办事项模拟数据
+        /// 使用状态筛选
         /// </summary>
-        private void CreateWaitList()
+        public int SearchWaitIndex
         {
-            WaitList = new List<WaitInfoDTO>
+            get { return _SearchWaitIndex; }
+            set 
             {
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-                new WaitInfoDTO() { Title = "测试录屏", Content = "仔细Content"},
-                new WaitInfoDTO() { Title = "上传录屏", Content = "1234567890"},
-            };
+                _SearchWaitIndex = value;
+                RaisePropertyChanged();
+            }
         }
+
+        public DelegateCommand QueryWaitListCmm { get; set; }
+        /// <summary>
+        /// 查询待办事项数据
+        /// </summary>
+        private void QueryWaitList()
+        {
+            int? status = SearchWaitIndex - 1;
+            if (status == -1)
+            {
+                status = null;
+            }
+
+            ApiRequest apiRequest = new()
+            {
+                Method = RestSharp.Method.GET,
+                Route = $"Wait/QueryWait?title={SearchWaitTitle}&status={status}",
+            };
+
+            ApiResponse apiResponse = HttpClient.Execute(apiRequest);
+
+            if (apiResponse.ResultCode == 1)
+            {
+                WaitList = JsonConvert.DeserializeObject<List<WaitInfoDTO>>(apiResponse.ResultData.ToString());
+
+                Visibility = (WaitList.Count > 0) ? Visibility.Hidden : Visibility.Visible;
+            }
+            else
+            {
+                WaitList = new List<WaitInfoDTO>();
+            }
+        }
+        #endregion
 
         #region 显示“添加待办”
         private bool _IsShowAddWait;
@@ -95,6 +129,108 @@ namespace DailyApp.WPF.ViewModels
         /// 显示“添加待办”命令
         /// </summary>
         public DelegateCommand ShowAddWaitCmm { get; set; }
+        #endregion
+
+        /// <summary>
+        /// 接收数据
+        /// </summary>
+        /// <param name="navigationContext"></param>
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            if (navigationContext.Parameters.ContainsKey("SelectedIndex"))
+            {
+                SearchWaitIndex = navigationContext.Parameters.GetValue<int>("SelectedIndex");
+            }
+            else
+            {
+                SearchWaitIndex = 0;
+            }
+            // 查询待办事项数据
+            QueryWaitList();
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            
+        }
+
+        #region 备忘录查询显示
+        private Visibility _Visibility;
+        /// <summary>
+        /// 是否显示列表
+        /// </summary>
+        public Visibility Visibility
+        {
+            get { return _Visibility; }
+            set
+            {
+                _Visibility = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        #region 添加待办事项
+        public WaitInfoDTO WaitInfoDTO { get; set; } = new WaitInfoDTO();
+        public DelegateCommand AddWaitCmm { get; set; }
+        private void AddWait()
+        {
+            if (WaitInfoDTO.Title == null || WaitInfoDTO.Content == null)
+            {
+                MessageBox.Show("标题和内容均不可为空！！！");
+                return;
+            }
+
+            ApiRequest apiRequest = new()
+            {
+                Method = RestSharp.Method.POST,
+                Route = $"Wait/AddWait",
+                Parameters = WaitInfoDTO
+            };
+            ApiResponse response = HttpClient.Execute(apiRequest);
+            if (response.ResultCode == 1)
+            {
+                QueryWaitList();
+                IsShowAddWait = false;
+            }
+            else
+            {
+                MessageBox.Show($"添加失败：{response.Msg}");
+            }
+        }
+        #endregion
+
+        #region 删除
+        public DelegateCommand<WaitInfoDTO> DelCmm { get; set; }
+        private void Del(WaitInfoDTO waitInfoDTO)
+        {
+            var selResult = MessageBox.Show($"确定要删除“{waitInfoDTO.Title}”吗？", "提示", MessageBoxButton.OKCancel);
+            if (selResult == MessageBoxResult.OK)
+            {
+                ApiRequest apiRequest = new()
+                {
+                    Method = RestSharp.Method.DELETE,
+                    Route = $"Wait/DelWait?waitId={waitInfoDTO.WaitId}",
+                };
+
+                ApiResponse apiResponse = HttpClient.Execute(apiRequest);
+
+                // 删除成功
+                if (apiResponse.ResultCode == 1)
+                {
+                    QueryWaitList();
+                }
+                else
+                {
+                    MessageBox.Show($"删除失败：ex：{apiResponse.Msg}");
+                }
+            }
+        }
         #endregion
     }
 }
